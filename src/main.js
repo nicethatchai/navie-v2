@@ -8,6 +8,7 @@ import {
   Vuetify,
   VApp,
   VNavigationDrawer,
+  VParallax,
   VFooter,
   VList,
   VBtn,
@@ -27,6 +28,7 @@ Vue.use(Vuetify, {
   components: {
     VApp,
     VNavigationDrawer,
+    VParallax,
     VFooter,
     VList,
     VBtn,

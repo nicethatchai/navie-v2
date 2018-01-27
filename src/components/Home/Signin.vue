@@ -19,7 +19,7 @@
                                     id="email"
                                     v-model="email"
                                     type="email"
-                                    required
+                                    
                                     >
                                     </v-text-field>
                                 </v-flex>
@@ -32,7 +32,7 @@
                                     id="password"
                                     v-model="password"
                                     type="password"
-                                    required
+                                    
                                     >
                                     </v-text-field>
                                 </v-flex>

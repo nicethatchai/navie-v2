@@ -1,17 +1,15 @@
 <template>
   <div>
-    home
-    <!-- <app-signin></app-signin> -->
+    <app-content></app-content>
     <app-footer></app-footer>
   </div>
-
 </template>
 
  <script src="https://unpkg.com/vue/dist/vue.js"></script>
  <script src="https://unpkg.com/vuetify/dist/vuetify.js"></script>
  <script>
  import Footer from './Footer.vue';
- import Signin from './Signin.vue';
+ import Content from './Content.vue';
 
   export default {
     data () {
@@ -29,7 +27,7 @@
     components: {
     // appHeader: Header,
       appFooter: Footer,
-      appSignin: Signin
+      appContent: Content
     }
   }
 </script>

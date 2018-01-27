@@ -1,5 +1,6 @@
 <template>
-  <!-- <section>
+  <v-content>
+      <section>
         <v-parallax :src="require('@../../../src/assets/hero.jpeg')" height="600">
           <v-layout
             column
@@ -20,7 +21,7 @@
             </v-btn>
           </v-layout>
         </v-parallax>
-      </section> -->
+      </section>
 
       <section>
         <v-layout
@@ -92,7 +93,7 @@
       </section>
 
       <section>
-        <v-parallax src="../../../src/assets/section.jpg" height="380">
+        <v-parallax :src="require('@../../../src/assets/section.jpg')" height="380">
           <v-layout column align-center justify-center>
             <div class="headline white--text mb-3 text-xs-center">Web development has never been easier</div>
             <em>Kick-start your application today</em>
@@ -162,4 +163,18 @@
           </v-layout>
         </v-container>
       </section>
+
+      <!-- <v-footer class="blue darken-2">
+        <v-layout row wrap align-center>
+          <v-flex xs12>
+            <div class="white--text ml-3">
+              Made with
+              <v-icon class="red--text">favorite</v-icon>
+              by <a class="white--text" href="https://vuetifyjs.com" target="_blank">Vuetify</a>
+              and <a class="white--text" href="https://github.com/vwxyzjn">Costa Huang</a>
+            </div>
+          </v-flex>
+        </v-layout>
+      </v-footer> -->
+    </v-content>
 </template>
