@@ -1,44 +1,151 @@
 <template>
-    <v-container mt-4>
-        <v-layout>
-            <v-flex xs12 sm6 md4 >
+    <v-container grid-list-xl>
+        <v-layout wrap mb-4>
+            <v-flex xs12 sm6 md4 mb-1 v-for="event in events" :key="event.id">
                 <v-card>
                     <v-card-media
                     class="white--text"
                     height="200px"
-                    src="https://www.ncl.com/sites/default/files/DestinationGalleries.Hawaii.SnorkelingBay900x400.jpg"
+                    :src="event.imageUrl"
                     >
                         <v-container fill-height fluid>
                             <v-layout fill-height>
                                 <v-flex xs12 align-end flexbox>
-                                    <span class="headline">Hawaii five o</span>
+                                    <span class="headline">{{event.title}}</span>
                                 </v-flex>
                             </v-layout>
                         </v-container>
                     </v-card-media>
                     <v-card-title>
                         <div>
-                            <span class="grey--text">1-Jan-2018</span><br>
-                            <span>Hawaii</span><br>
-                            <span>Short description</span>
+                            <span class="grey--text">{{event.date}}</span><br>
+                            <span> <v-icon small>place</v-icon> {{event.location}}</span><br>
+                            <span>{{event.description}}</span>
                         </div>
                     </v-card-title>
                     <v-card-actions>
-                        <v-btn flat color="orange">View</v-btn>
-                        <v-btn flat color="orange">Explore</v-btn>
+                        <v-btn flat color="orange" :to="/events/ + event.id">View</v-btn>
+                        <!-- <v-btn flat color="orange">Explore</v-btn> -->
                     </v-card-actions>
                 </v-card>
             </v-flex>
         </v-layout>
         <v-btn
-              fixed
-              dark
-              fab
-              bottom
-              right
-              color="pink"
-            >
-              <v-icon>add</v-icon>
-            </v-btn>
+            fixed
+            dark
+            fab
+            bottom
+            right
+            color="pink"
+            v-on:click.native="dialog = true">
+            <v-icon>add</v-icon>
+        </v-btn>
+        <v-dialog v-model="dialog" name="dialog" persistent max-width="560px">
+            <v-btn style="display:none" dark slot="activator">Open Dialog</v-btn>
+            <v-card >
+                <form @submit.prevent="onCreateEvent">
+                    <v-card-title>
+                        <h4 class="headline">Create A New Event</h4>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container grid-list-md>
+                            <v-layout wrap>
+                                <v-flex xs12>
+                                    <v-text-field
+                                    name="title" 
+                                    label="Title"
+                                    id="title" 
+                                    required
+                                    v-model="title"></v-text-field>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <v-text-field
+                                    name="location" 
+                                    label="Location"
+                                    id="location" 
+                                    required
+                                    v-model="location"></v-text-field>
+                                </v-flex>
+                                <v-flex xs12>
+                                <v-text-field
+                                    name="imageUrl" 
+                                    label="Image Url"
+                                    id="imageUrl" 
+                                    required
+                                    v-model="imageUrl"></v-text-field>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <img :src="imageUrl" height="140">
+                                </v-flex>
+                                <v-flex xs12>
+                                <v-text-field
+                                    name="description" 
+                                    label="Description"
+                                    id="description" 
+                                    multi-line
+                                    v-model="description"></v-text-field>
+                                </v-flex>
+                                <v-layout >
+                                <v-flex xs12 sm6 md4>
+                                    <h4>Choose Event Date</h4>
+                                    <v-date-picker color="blue" locale="th" landscape first-day-of-week="1" v-model="date"></v-date-picker>
+                                    <p> {{date}} </p>
+                                </v-flex>          
+                                </v-layout>
+                            </v-layout>
+                        </v-container>
+                        <small>*indicates required field</small>
+                    </v-card-text>
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="red darken-1" flat @click.native="dialog = false">Cencel</v-btn>
+                    <v-btn color="blue darken-1" :disabled="!formIsValid" flat @click.native="dialog = false" type="submit">Add</v-btn>
+                    </v-card-actions>
+                </form>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
+
+<script>
+
+export default {
+    data () {
+      return {
+          dialog: false,
+          title: '',
+          location: '',
+          imageUrl: '',
+          description: '',
+          date: ''
+      }
+    },
+    computed: {
+        events () {
+            return this.$store.getters.loadedEvents
+      },
+        formIsValid () {
+            return this.title !== '' &&
+                this.location !== '' &&
+                this.imageUrl !== '' &&
+                this.description !== ''
+        }
+    },
+     methods: {
+        onCreateEvent () {
+            if (!this.formIsValid) {
+                return
+            }
+            const eventData = {
+                title: this.title,
+                location: this.location,
+                imageUrl: this.imageUrl,
+                description: this.description,
+                date: this.date
+            }
+            this.$store.dispatch('createEvent',eventData)
+            this.$router.push('/events')
+        }
+    }
+}
+</script>

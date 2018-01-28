@@ -1,11 +1,12 @@
 <template>
     <v-app id="inspire">
         <v-navigation-drawer
-      clipped
-      fixed
-      v-model="drawer"
-      app
-    >
+        
+        clipped
+        fixed
+        v-model="drawer"
+        app
+      >
       <v-list dense>
         <v-list-tile @click="" v-for="item in sideMenu" :key="item.title" :to="item.link">
           <v-list-tile-action>
@@ -20,18 +21,19 @@
     <v-toolbar dark app fixed clipped-left class="indigo darken-4">
       <!-- <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon> -->
       <v-toolbar-title>
-        <router-link to="/" tag="span" style="cursor: pointer">This Event</router-link>
+        <router-link to="/" tag="span" style="cursor: pointer">{{ event.title }}</router-link>
       </v-toolbar-title>
-      <!-- <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn flat v-for="item in menuItems" :key="item.title" :to="item.link">
+        <v-btn flat v-for="item in menuItem" :key="item.title" :to="item.link">
           <v-icon left>{{item.icon}}</v-icon>
-          {{item.title}}</v-btn> -->
+          {{item.title}}</v-btn>
         <!-- <v-btn flat>
-          <v-icon left>lock_open</v-icon>
-          Sign in</v-btn> -->
+          <v-icon left>exit_to_app</v-icon>
+          Sign out</v-btn> -->
       </v-toolbar-items>
     </v-toolbar>
+    hello
     </v-app>
 </template>
 
@@ -45,8 +47,21 @@ export default {
         {icon: 'map', title: 'Floorplan', link: '/floorplan'},
         {icon: 'supervisor_account', title: 'Participant', link: '/participant'},
         {icon: 'settings', title: 'settings', link: '/settings'}
+      ],
+      menuItem: [
+          {icon: 'today', title: 'Events', link: '/events'},
+          {icon: 'person', title: 'Profile', link: '/profile'},
+          {icon: 'exit_to_app', title: 'Sign out'}
       ]
     }),
+    props: [
+      'id'
+    ],
+    computed: {
+      event () {
+        return this.$store.getters.loadedEvent ()
+      }
+    }
 }
 </script>
 

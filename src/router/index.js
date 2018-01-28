@@ -64,8 +64,9 @@ export default new Router({
       component: CreateEvent
     },
     {
-      path: '/event',
+      path: '/events/:id',
       name: 'Event',
+      props: true,
       component: Event
     },
     {

@@ -17,7 +17,7 @@
         title: 'Navie',
         barMenu: [
         {icon: 'home', title: 'Home', link: '/home'},
-        {icon: 'file_download', title: 'Download', link: '/download'},
+        {icon: 'file_download', title: 'Download'},
         {icon: 'lock_open', title: 'Sign in', link: '/signin'}
         ]
       }
