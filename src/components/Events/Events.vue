@@ -1,6 +1,15 @@
 <template>
     <v-container grid-list-xl>
-        <v-layout wrap mb-4>
+        <v-layout >
+            <v-flex xs12 class="text-xs-center">
+             <v-progress-circular 
+             indeterminate 
+             v-bind:size="50" 
+             color="blue"
+             v-if="loading"></v-progress-circular>        
+            </v-flex>
+        </v-layout>
+        <v-layout wrap mb-4 v-if="!loading">
             <v-flex xs12 sm6 md4 mb-1 v-for="event in events" :key="event.id">
                 <v-card>
                     <v-card-media
@@ -18,13 +27,15 @@
                     </v-card-media>
                     <v-card-title>
                         <div>
-                            <span class="grey--text">{{event.date}}</span><br>
-                            <span> <v-icon small>place</v-icon> {{event.location}}</span><br>
-                            <span>{{event.description}}</span>
+                            <!-- <span class="grey--text">{{event.date}}</span> -->
+                            <span class="red--text"> <v-icon small color="red">place</v-icon> {{event.location}}</span><br><br>
+                            <p>{{event.description}}</p>
                         </div>
                     </v-card-title>
                     <v-card-actions>
                         <v-btn flat color="orange" :to="/events/ + event.id">View</v-btn>
+                        <v-spacer></v-spacer>
+                        <span class="grey--text">{{event.date}}</span>
                         <!-- <v-btn flat color="orange">Explore</v-btn> -->
                     </v-card-actions>
                 </v-card>
@@ -64,6 +75,7 @@
                                     label="Location"
                                     id="location" 
                                     required
+                                    :rules="[(v) => v.length <= 45 || 'Max 45 characters']"
                                     v-model="location"></v-text-field>
                                 </v-flex>
                                 <v-flex xs12>
@@ -82,7 +94,7 @@
                                     name="description" 
                                     label="Description"
                                     id="description" 
-                                    multi-line
+                                    :rules="[(v) => v.length <= 100 || 'Max 100 characters']"
                                     v-model="description"></v-text-field>
                                 </v-flex>
                                 <v-layout >
@@ -94,7 +106,7 @@
                                 </v-layout>
                             </v-layout>
                         </v-container>
-                        <small>*indicates required field</small>
+                        <!-- <small>*indicates required field</small> -->
                     </v-card-text>
                     <v-card-actions>
                     <v-spacer></v-spacer>
@@ -129,6 +141,9 @@ export default {
                 this.location !== '' &&
                 this.imageUrl !== '' &&
                 this.description !== ''
+        },
+        loading () {
+            return this.$store.getters.loading
         }
     },
      methods: {

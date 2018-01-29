@@ -20,6 +20,8 @@ import {
   VAlert,
   VTextField,
   VDatePicker,
+  VRadioGroup,
+  VProgressCircular,
   transitions
 } from 'vuetify'
 import '../node_modules/vuetify/src/stylus/app.styl'
@@ -41,6 +43,8 @@ Vue.use(Vuetify, {
     VAlert,
     VTextField,
     VDatePicker,
+    VRadioGroup,
+    VProgressCircular,
     transitions
   },
   theme: {
@@ -71,5 +75,11 @@ new Vue({
       storageBucket: 'navie-e0b65.appspot.com',
       messagingSenderId: '139311119369'
     })
+  firebase.auth().onAuthStateChanged((user) => {
+    if(user) {
+      this.$store.dispatch('autoSignin', user)
+    }
+  })
+  this.$store.dispatch('loadedEvents')
   }
 })

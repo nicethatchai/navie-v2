@@ -1,8 +1,7 @@
 <template>
-    <v-app id="inspire">
-        <v-navigation-drawer
-        
-        clipped
+    <div>
+        <!-- <v-navigation-drawer
+        :clipped="$vuetify.breakpoint.width > 1264"
         fixed
         v-model="drawer"
         app
@@ -19,7 +18,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-toolbar dark app fixed clipped-left class="indigo darken-4">
-      <!-- <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon> -->
+      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>
         <router-link to="/" tag="span" style="cursor: pointer">{{ event.title }}</router-link>
       </v-toolbar-title>
@@ -27,14 +26,16 @@
       <v-toolbar-items>
         <v-btn flat v-for="item in menuItem" :key="item.title" :to="item.link">
           <v-icon left>{{item.icon}}</v-icon>
-          {{item.title}}</v-btn>
+          {{item.title}}</v-btn> -->
         <!-- <v-btn flat>
           <v-icon left>exit_to_app</v-icon>
           Sign out</v-btn> -->
-      </v-toolbar-items>
-    </v-toolbar>
-    hello
-    </v-app>
+      <!-- </v-toolbar-items>
+    </v-toolbar> -->
+    <!-- <v-content> -->
+      {{ event.title }}
+    <!-- </v-content> -->
+    </div>
 </template>
 
 <script>
@@ -59,7 +60,7 @@ export default {
     ],
     computed: {
       event () {
-        return this.$store.getters.loadedEvent ()
+        return this.$store.getters.loadedEvent (this.id)
       }
     }
 }

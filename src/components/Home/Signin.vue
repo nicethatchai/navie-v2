@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container mt-4>
       <v-layout row v-if="error">
         <v-flex xs12 sm6 md4 offset-sm4 >
             <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
@@ -80,7 +80,7 @@ export default {
   watch: {
       user (value) {
           if (value !== null && value !== undefined) {
-              this.$router.push('/')
+              this.$router.push('/events')
           }
       }
   },

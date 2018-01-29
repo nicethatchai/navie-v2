@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container mt-4>
       <v-layout row v-if="error">
           <v-flex xs12 sm6 md4 offset-sm4 >
               <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
@@ -55,6 +55,34 @@
                                 </v-flex>
                             </v-layout>
                             <v-layout row>
+                                <v-flex xs12>
+                                    <v-card-text>
+                                        <v-radio-group v-model="gender" row>
+                                            <v-radio 
+                                            label="Male" 
+                                            value="Male"
+                                            color="indigo" ></v-radio>
+                                            <v-radio 
+                                            label="Female" 
+                                            value="Female"
+                                            color="pink"></v-radio>
+                                        </v-radio-group>
+                                    </v-card-text>
+                                </v-flex>
+                            </v-layout>
+                            <v-layout row justify-center>
+                                <v-flex xs12>
+                                    <v-card-text>
+                                        Date of Birth
+                                    </v-card-text>
+                                </v-flex>
+                            </v-layout>
+                            <v-layout row  mb-3 >
+                                <v-flex xs12>
+                                    <v-date-picker color="blue" first-day-of-week="1" v-model="date"></v-date-picker>
+                                </v-flex>
+                            </v-layout>
+                            <v-layout row>
                                 <v-flex xs12 class="text-xs-center">
                                     <v-btn large type="submit"  color="info" :disabled="loading" :loading="loading">
                                         Sign up
@@ -79,9 +107,12 @@ import Alert from './../Shared/Alert.vue'
 export default {
   data () {
       return {
-          email: '',
-          password: '',
-          confirmPasswords: '',
+            email: '',
+            password: '',
+            confirmPasswords: '',
+            gender: '',
+            date: '',
+            menu: false,
       }
   },
   computed: {
@@ -101,7 +132,7 @@ export default {
   watch: {
       user (value) {
           if (value !== null && value !== undefined) {
-              this.$router.push('/')
+              this.$router.push('/events')
           }
       }
   },

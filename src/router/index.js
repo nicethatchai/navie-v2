@@ -13,16 +13,17 @@ import Dashboard from '@/components/Dashboard/Dashboard'
 import Floorplan from '@/components/Floorplan/Floorplan'
 import Monitor from '@/components/Monitor/Monitor'
 import Participant from '@/components/Participant/Participant'
+import AuthGuard from './AuthGuard'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
-    // {
-    //   path: '/',
-    //   name: 'Home',
-    //   component: Home
-    // },
+    {
+      path: '/',
+      name: 'Home',
+      component: Home
+    },
     {
       path: '/home',
       name: 'Home',
@@ -56,7 +57,8 @@ export default new Router({
     {
       path: '/events',
       name: 'Events',
-      component: Events
+      component: Events,
+      beforeEnter: AuthGuard
     },
     {
       path: '/event/new',
@@ -72,7 +74,8 @@ export default new Router({
     {
       path: '/profile',
       name: 'Profile',
-      component: Profile
+      component: Profile,
+      beforeEnter: AuthGuard
     },
     {
       path: '/floorplan',

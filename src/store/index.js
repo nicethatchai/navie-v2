@@ -6,44 +6,15 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
     state: {
-        loadedEvents: [
-            { imageUrl: 'https://www.ncl.com/sites/default/files/DestinationGalleries.Hawaii.SnorkelingBay900x400.jpg',
-            id: '1',
-            title: 'Hawaii',
-            date: '2017-07-26',
-            location: 'Hawaii',
-            description: ''
-            },
-            { imageUrl: 'http://cdn-image.travelandleisure.com/sites/default/files/styles/1600x1000/public/1492804659/soneva-jani-maldives-MALDIVES0421.jpg?itok=ZpxHJgMf',
-            id: '2',
-            title: 'Maldives',
-            date: '2017-07-26',
-            location: 'Maldives',
-            description: ''
-            },
-            { imageUrl: 'https://imagesvc.timeincapp.com/v3/mm/image?url=https%3A%2F%2Ftimedotcom.files.wordpress.com%2F2017%2F12%2Fcopenhagen-best-places-travel-2018.jpg&w=800&q=85',
-            id: '3',
-            title: 'Denmark',
-            date: '2017-07-26',
-            location: 'Copenhagen',
-            description: ''
-            },
-            { imageUrl: 'https://imagesvc.timeincapp.com/v3/mm/image?url=https%3A%2F%2Ftimedotcom.files.wordpress.com%2F2017%2F12%2Fmarrakech-best-places-travel-2018.jpg&w=800&q=85',
-            id: '4',
-            title: 'Morocco',
-            date: '2017-07-26',
-            location: 'Marrakesh',
-            description: ''
-            },
-        ],
-        user: {
-            id: 'sdasdkal',
-            registeredEvents: ['1','2']
-        },
+        loadedEvents: [],
+        user: null,
         loading: false,
         error: null
     },
     mutations: {
+        setLoadedEvents (state, payload) {
+            state.loadedEvents = payload
+        },
         createEvent (state, payload) {
             state.loadedEvents.push(payload)
         },
@@ -61,16 +32,52 @@ export const store = new Vuex.Store({
         }
     },
     actions: {
-        createEvent ({commit}, payload) {
+        loadedEvents ({commit}) {
+            commit('setLoading', true)
+            firebase.database().ref('events').once('value')
+            .then((data) => {
+                const events = []
+                const obj = data.val()
+                for(let key in obj) {
+                    events.push({
+                        id: key,
+                        title: obj[key].title,
+                        location: obj[key].location,
+                        date: obj[key].date,
+                        description: obj[key].description,
+                        imageUrl: obj[key].imageUrl,
+                        creatorId: obj[key].creatorId
+                    })
+                }
+                commit('setLoadedEvents', events)
+                commit('setLoading', false)
+            })
+            .catch((error) => {
+                console.log(error)
+                commit('setLoading', true)
+            })
+        },
+        createEvent ({commit, getters}, payload) {
             const event = {
                 title: payload.title,
                 location: payload.location,
                 imageUrl: payload.imageUrl,
                 description: payload.description,
-                date: payload.date
+                date: payload.date,
+                creatorId: getters.user.id
             }
             // reach to firebase
-            commit('createEvent', event)
+            firebase.database().ref('events').push(event)
+            .then((data) => {
+                const key = data.key
+                commit('createEvent',{ 
+                ...event,
+                id: key
+                })
+            })
+            .catch((error) => {
+                console.log(error)
+            })
         },
         signUserUp ({commit}, payload) {
             commit('setLoading', true)
@@ -81,6 +88,7 @@ export const store = new Vuex.Store({
                         commit('setLoading', false)
                         const newUser = {
                             id: user.uid,
+                            registeredEvents: []
                         }
                         commit('setUser', newUser)
                     }
@@ -102,6 +110,7 @@ export const store = new Vuex.Store({
                         commit('setLoading', false)
                         const newUser = {
                             id: user.uid,
+                            registeredEvents: []
                         }
                         commit('setUser', newUser)
                     }
@@ -114,19 +123,27 @@ export const store = new Vuex.Store({
                     }
                 )
         },
+        autoSignin ({commit}, payload) {
+            commit('setUser', {id: payload.uid, registeredEvents: []})
+        },
+        logout ({commit}) {
+            firebase.auth().signOut()
+            commit('setUser', null)
+        },
         clearError ({commit}) {
             commit('clearError')
         }
+
     },
     getters:{
         loadedEvents (state) {
-            return state.loadedEvents.sort((eventA,eventB) => {
+            return state.loadedEvents.sort((eventA, eventB) => {
                 return eventA.date > eventB.date
             })
         },
         loadedEvent (state) {
             return (eventId) => {
-                return state.loadedEvents.find((events) => {
+                return state.loadedEvents.find((event) => {
                     return event.id === eventId
                 })
             }
