@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire">
+  <v-app id="inspire" >
     <!-- <v-navigation-drawer
       clipped
       fixed
@@ -92,7 +92,8 @@ import Signin from './components/Home/Signin.vue'
       menuItems () {
         let menuItems = [
           {icon: 'home', title: 'Home', link: '/home'},
-          {icon: 'file_download', title: 'Download', link: '/download'},
+          {icon: 'file_download', title: 'Download'},
+          {icon: 'account_box', title: 'About'},
           {icon: 'face', title: 'Sign up', link: '/signup'},
           {icon: 'lock_open', title: 'Sign in', link: '/signin'}
         ]

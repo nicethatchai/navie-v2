@@ -9,10 +9,10 @@ import CreateEvent from '@/components/Events/CreateEvent'
 import Event from '@/components/Events/Event'
 import Profile from '@/components/Home/Profile'
 import Signup from '@/components/Home/Signup'
-import Dashboard from '@/components/Dashboard/Dashboard'
-import Floorplan from '@/components/Floorplan/Floorplan'
-import Monitor from '@/components/Monitor/Monitor'
-import Participant from '@/components/Participant/Participant'
+import Dashboard from '@/components/EventDetails/Dashboard'
+import Floorplan from '@/components/EventDetails/Floorplan'
+import Monitor from '@/components/EventDetails/Monitor'
+import Participant from '@/components/EventDetails/Participant'
 import AuthGuard from './AuthGuard'
 
 Vue.use(Router)
@@ -49,11 +49,11 @@ export default new Router({
       name: 'HelloWorld',
       component: HelloWorld
     },
-    {
-      path: '/dashboard',
-      name: 'Dashboard',
-      component: Dashboard
-    },
+    // {
+    //   path: '/dashboard',
+    //   name: 'Dashboard',
+    //   component: Dashboard
+    // },
     {
       path: '/events',
       name: 'Events',
@@ -78,17 +78,22 @@ export default new Router({
       beforeEnter: AuthGuard
     },
     {
-      path: '/floorplan',
+      path: '/events/:id/dashboard',
+      name: 'Dashboard',
+      component: Dashboard
+    },
+    {
+      path: '/events/:id/floorplan',
       name: 'Floorplan',
       component: Floorplan
     },
     {
-      path: '/monitor',
+      path: '/events/:id/monitor',
       name: 'Monitor',
       component: Monitor
     },
     {
-      path: '/participant',
+      path: '/events/:id/participant',
       name: 'Participant',
       component: Participant
     }

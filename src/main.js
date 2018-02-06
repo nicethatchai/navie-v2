@@ -72,7 +72,7 @@ new Vue({
       authDomain: 'navie-e0b65.firebaseapp.com',
       databaseURL: 'https://navie-e0b65.firebaseio.com',
       projectId: 'navie-e0b65',
-      storageBucket: 'navie-e0b65.appspot.com',
+      storageBucket: 'gs://navie-e0b65.appspot.com',
       messagingSenderId: '139311119369'
     })
   firebase.auth().onAuthStateChanged((user) => {
@@ -80,6 +80,6 @@ new Vue({
       this.$store.dispatch('autoSignin', user)
     }
   })
-  this.$store.dispatch('loadedEvents')
+  // this.$store.dispatch('loadedEvents')
   }
 })

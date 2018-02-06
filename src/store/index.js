@@ -54,24 +54,39 @@ export const store = new Vuex.Store({
             })
             .catch((error) => {
                 console.log(error)
-                commit('setLoading', true)
+                commit('setLoading', false)
             })
         },
         createEvent ({commit, getters}, payload) {
             const event = {
                 title: payload.title,
                 location: payload.location,
-                imageUrl: payload.imageUrl,
                 description: payload.description,
                 date: payload.date,
                 creatorId: getters.user.id
+
             }
+            let imageUrl
+            let key
             // reach to firebase
             firebase.database().ref('events').push(event)
             .then((data) => {
-                const key = data.key
+                key = data.key
+                return key
+            })
+            .then(key => {
+                const filename = payload.image.name
+                const ext = filename.slice(filename.lastIndexOf('.'))
+                return filebase.storage().ref('events/' + key + '.' + ext).put(payload.image)
+            })
+            .then(fileData => {
+                imageUrl = fileData.metadata.downloadURLs[0]
+                return firebase.database().ref('events').child(key).update({imageUrl: imageUrl})
+            })
+            .then(() => {
                 commit('createEvent',{ 
                 ...event,
+                imageUrl: imageUrl,
                 id: key
                 })
             })

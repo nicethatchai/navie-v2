@@ -1,6 +1,6 @@
 <template>
     <div>
-        <!-- <v-navigation-drawer
+        <v-navigation-drawer
         :clipped="$vuetify.breakpoint.width > 1264"
         fixed
         v-model="drawer"
@@ -17,7 +17,7 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar dark app fixed clipped-left class="indigo darken-4">
+    <!-- <v-toolbar dark fixed clipped-left class="indigo darken-4">
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>
         <router-link to="/" tag="span" style="cursor: pointer">{{ event.title }}</router-link>
@@ -26,15 +26,14 @@
       <v-toolbar-items>
         <v-btn flat v-for="item in menuItem" :key="item.title" :to="item.link">
           <v-icon left>{{item.icon}}</v-icon>
-          {{item.title}}</v-btn> -->
-        <!-- <v-btn flat>
+          {{item.title}}</v-btn>
+        <v-btn flat>
           <v-icon left>exit_to_app</v-icon>
-          Sign out</v-btn> -->
-      <!-- </v-toolbar-items>
+          Sign out</v-btn>
+      </v-toolbar-items>
     </v-toolbar> -->
-    <!-- <v-content> -->
-      {{ event.title }}
-    <!-- </v-content> -->
+    <!-- <router-view></router-view> -->
+    {{ event.title }}
     </div>
 </template>
 
