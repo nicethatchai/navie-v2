@@ -4,10 +4,11 @@
         :clipped="$vuetify.breakpoint.width > 1264"
         fixed
         v-model="drawer"
+        stateless
         app
       >
       <v-list dense>
-        <v-list-tile @click="" v-for="item in sideMenu" :key="item.title" :to="item.link">
+        <v-list-tile @click="" v-for="item in sideMenu" :key="item.title" :to="/events/ + id + item.link">
           <v-list-tile-action>
             <v-icon>{{item.icon}}</v-icon>
           </v-list-tile-action>
@@ -17,6 +18,36 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
+    
+    <!-- <v-tabs fixed centered>
+    <v-tabs-bar dark color="cyan">
+      <v-tabs-slider color="yellow"></v-tabs-slider>
+      <v-tabs-item href="#tab-1">
+        Dashboard
+      </v-tabs-item>
+      <v-tabs-item href="#tab-2">
+        Monitor
+      </v-tabs-item>
+      <v-tabs-item href="#tab-3">
+        Floor plan
+      </v-tabs-item>
+      <v-tabs-item href="#tab-4">
+        Participant
+      </v-tabs-item>
+    </v-tabs-bar>
+    <v-tabs-items>
+      <v-tabs-content
+        v-for="i in 4"
+        :key="i"
+        :id="'tab-' + i"
+      >
+        <v-card flat>
+          <v-card-text>{{ text }}</v-card-text>
+        </v-card>
+      </v-tabs-content>
+    </v-tabs-items>
+  </v-tabs> -->
+
     <!-- <v-toolbar dark fixed clipped-left class="indigo darken-4">
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>
@@ -32,7 +63,6 @@
           Sign out</v-btn>
       </v-toolbar-items>
     </v-toolbar> -->
-    <!-- <router-view></router-view> -->
     {{ event.title }}
     </div>
 </template>
@@ -40,6 +70,11 @@
 <script>
 export default {
   data: () => ({
+      // id: this.id,
+      items: [
+          'web', 'shopping', 'videos', 'images', 'news'
+        ],
+        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
       drawer: true,
       sideMenu: [
         {icon: 'equalizer', title: 'Dashboard', link: '/dashboard'},
@@ -60,6 +95,7 @@ export default {
     computed: {
       event () {
         return this.$store.getters.loadedEvent (this.id)
+        console.log(this.$store.getters.loadedEvent (this.id))
       }
     }
 }

@@ -22,6 +22,9 @@ import {
   VDatePicker,
   VRadioGroup,
   VProgressCircular,
+  VTabs,
+  VDataTable,
+  VMenu,
   transitions
 } from 'vuetify'
 import '../node_modules/vuetify/src/stylus/app.styl'
@@ -45,6 +48,9 @@ Vue.use(Vuetify, {
     VDatePicker,
     VRadioGroup,
     VProgressCircular,
+    VTabs,
+    VDataTable,
+    VMenu,
     transitions
   },
   theme: {

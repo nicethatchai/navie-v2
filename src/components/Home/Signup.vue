@@ -19,9 +19,20 @@
                             <v-layout row>
                                 <v-flex xs12>
                                     <v-text-field
-                                    name="email"
+                                    name="name"
+                                    label="Name"
+                                    id="name"
+                                    v-model="name"
+                                    type="text"
+                                    required
+                                    >
+                                    </v-text-field>
+                                </v-flex>
+                            </v-layout>
+                            <v-layout row>
+                                <v-flex xs12>
+                                    <v-text-field
                                     label="Email"
-                                    id="email"
                                     v-model="email"
                                     type="email"
                                     required
@@ -32,9 +43,7 @@
                             <v-layout row>
                                 <v-flex xs12>
                                     <v-text-field
-                                    name="password"
                                     label="Password"
-                                    id="password"
                                     v-model="password"
                                     type="password"
                                     required
@@ -60,11 +69,11 @@
                                         <v-radio-group v-model="gender" row>
                                             <v-radio 
                                             label="Male" 
-                                            value="Male"
+                                            value="male"
                                             color="indigo" ></v-radio>
                                             <v-radio 
                                             label="Female" 
-                                            value="Female"
+                                            value="female"
                                             color="pink"></v-radio>
                                         </v-radio-group>
                                     </v-card-text>
@@ -79,7 +88,7 @@
                             </v-layout>
                             <v-layout row  mb-3 >
                                 <v-flex xs12>
-                                    <v-date-picker color="blue" first-day-of-week="1" v-model="date"></v-date-picker>
+                                    <v-date-picker color="blue" first-day-of-week="1" v-model="dob"></v-date-picker>
                                 </v-flex>
                             </v-layout>
                             <v-layout row>
@@ -107,11 +116,12 @@ import Alert from './../Shared/Alert.vue'
 export default {
   data () {
       return {
+            name: '',
             email: '',
             password: '',
             confirmPasswords: '',
             gender: '',
-            date: '',
+            dob: '',
             menu: false,
       }
   },
@@ -138,7 +148,14 @@ export default {
   },
   methods: {
       onSignup () {
-          this.$store.dispatch('signUserUp', {email: this.email, password: this.password})
+          const userData = {
+                name: this.name,
+                email: this.email,
+                password: this.password,
+                gender: this.gender,
+                dob: this.dob
+            }
+          this.$store.dispatch('signUserUp', userData)
       },
       onDismissed () {
           console.log('Dissmiss Alert!')

@@ -95,8 +95,16 @@ export const store = new Vuex.Store({
             })
         },
         signUserUp ({commit}, payload) {
+            const user = {
+                name: payload.name,
+                email: payload.email,
+                gender: payload.gender,
+                dob: payload.dob,
+            }
             commit('setLoading', true)
             commit('clearError')
+            
+            // firebase.database().ref('users').
             firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
                 .then(
                     user => {
@@ -115,6 +123,8 @@ export const store = new Vuex.Store({
                         console.log(error)
                     }
                 )
+            var cuser = firebase.auth().currentUser;
+            firebase.database().ref('users').push(user).key(cuser.uid)
         },
         signUserIn ({commit}, payload) {
             commit('setLoading', true)
