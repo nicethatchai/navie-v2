@@ -95,12 +95,6 @@ export const store = new Vuex.Store({
             })
         },
         signUserUp ({commit}, payload) {
-            const user = {
-                name: payload.name,
-                email: payload.email,
-                gender: payload.gender,
-                dob: payload.dob,
-            }
             commit('setLoading', true)
             commit('clearError')
             
@@ -113,6 +107,12 @@ export const store = new Vuex.Store({
                             id: user.uid,
                             registeredEvents: []
                         }
+                        firebase.database().ref('users/'+ newUser.id).set({
+                            name:payload.name,
+                            email: payload.email,
+                            gender: payload.gender,
+                            dob: payload.dob,
+                        });
                         commit('setUser', newUser)
                     }
                 )
@@ -123,8 +123,11 @@ export const store = new Vuex.Store({
                         console.log(error)
                     }
                 )
-            var cuser = firebase.auth().currentUser;
-            firebase.database().ref('users').push(user).key(cuser.uid)
+            // console.log(uid)
+            // var cuser = firebase.auth().currentUser;
+            // firebase.database().ref('users/'+ id).set(user);
+            // console.log('Add user to firebase')
+            // firebase.database().ref('users/' + newUser.id).push(user)
         },
         signUserIn ({commit}, payload) {
             commit('setLoading', true)
