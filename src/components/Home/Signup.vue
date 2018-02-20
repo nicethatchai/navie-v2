@@ -34,6 +34,7 @@
                                     <v-text-field
                                     label="Email"
                                     v-model="email"
+                                    id="email"
                                     type="email"
                                     required
                                     >
@@ -45,6 +46,7 @@
                                     <v-text-field
                                     label="Password"
                                     v-model="password"
+                                    id="password"
                                     type="password"
                                     required
                                     >

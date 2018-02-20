@@ -75,7 +75,6 @@
       </v-alert>
       </template>
     </v-data-table>
-    
     <v-btn
       fixed
       dark
@@ -86,18 +85,18 @@
       v-on:click.native="dialog = true">
       <v-icon>add</v-icon>
     </v-btn>
+    <div class="text-xs-center pt-2">
+      <v-pagination v-model="pagination.page" :length="pages"></v-pagination>
+    </div>
   </div>
 </template>
-
 
 <script>
   export default {
     data: () => ({
       search: '',
       dialog: false,
-      pagination: {
-        // rowsPerPage:8
-      },
+      pagination: {},
       selected: [],
       headers: [
         {
@@ -112,54 +111,45 @@
       ],
       items: [
            {
-            value: false,
             name: 'Rattapon Kaewpinjai',
             gender: 'Male',
             age: 21,
           },
           {
-            value: false,
             name: 'Thatchai Chuaubon',
             gender: 'Male',
             age: 22,
           },
           {
-            value: false,
             name: 'Narinrat Rongsawan',
             gender: 'Female',
             age: 22,
           },
           {
-            value: false,
             name: 'Watchanan Chantapakul',
             gender: 'Male',
             age: 21,
           },
           {
-            value: false,
             name: 'Piluck Chokdee',
             gender: 'Female',
             age: 21,
           },
           {
-            value: false,
             name: 'Tananut Panyagosa',
             gender: 'Male',
             age: 22,
           },
           {
-            value: false,
             name: 'Igris Chor',
             gender: 'Female',
             age: 20,
           },
           {
-            value: false,
             name: 'Pink Chompu',
             gender: 'Female',
             age: 22,
-          },
-          
+          }
           ],
       editedIndex: -1,
       editedItem: {
@@ -175,11 +165,15 @@
     }),
 
     computed: {
-      test() {
-        
-      },
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+      },
+      pages () {
+        if (this.pagination.rowsPerPage == null ||
+          this.pagination.totalItems == null
+        ) return 0
+
+        return Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage)
       }
     },
 

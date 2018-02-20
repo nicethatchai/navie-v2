@@ -1,73 +1,41 @@
 <template>
     <div>
+        <!-- Side Bar -->
         <v-navigation-drawer
-        :clipped="$vuetify.breakpoint.width > 1264"
-        fixed
-        v-model="drawer"
-        stateless
-        app
-      >
-      <v-list dense>
-        <v-list-tile @click="" v-for="item in sideMenu" :key="item.title" :to="/events/ + id + item.link">
-          <v-list-tile-action>
-            <v-icon>{{item.icon}}</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>{{item.title}}</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
+            :clipped="$vuetify.breakpoint.width > 1264"
+            fixed
+            v-model="drawer"
+            stateless
+            app
+            disable-resize-watcher
+            permanent
+          >
+          <v-list dense>
+            <v-list-tile @click="" v-for="item in sideMenu" :key="item.title" :to="/events/ + id + item.link">
+              <v-list-tile-action>
+                <v-icon>{{item.icon}}</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>{{item.title}}</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-navigation-drawer>     
     
-    <!-- <v-tabs fixed centered>
-    <v-tabs-bar dark color="cyan">
-      <v-tabs-slider color="yellow"></v-tabs-slider>
-      <v-tabs-item href="#tab-1">
-        Dashboard
-      </v-tabs-item>
-      <v-tabs-item href="#tab-2">
-        Monitor
-      </v-tabs-item>
-      <v-tabs-item href="#tab-3">
-        Floor plan
-      </v-tabs-item>
-      <v-tabs-item href="#tab-4">
-        Participant
-      </v-tabs-item>
-    </v-tabs-bar>
-    <v-tabs-items>
-      <v-tabs-content
-        v-for="i in 4"
-        :key="i"
-        :id="'tab-' + i"
-      >
-        <v-card flat>
-          <v-card-text>{{ text }}</v-card-text>
-        </v-card>
-      </v-tabs-content>
-    </v-tabs-items>
-  </v-tabs> -->
+    <!-- {{ event.title }} -->
 
-    <!-- <v-toolbar dark fixed clipped-left class="indigo darken-4">
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title>
-        <router-link to="/" tag="span" style="cursor: pointer">{{ event.title }}</router-link>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-toolbar-items>
-        <v-btn flat v-for="item in menuItem" :key="item.title" :to="item.link">
-          <v-icon left>{{item.icon}}</v-icon>
-          {{item.title}}</v-btn>
-        <v-btn flat>
-          <v-icon left>exit_to_app</v-icon>
-          Sign out</v-btn>
-      </v-toolbar-items>
-    </v-toolbar> -->
-    {{ event.title }}
+    <router-view></router-view>
+
     </div>
 </template>
 
 <script>
+import Dashboard from '../EventDetails/Dashboard.vue'
+import Floorplan from '../EventDetails/Floorplan.vue'
+import Monitor from '../EventDetails/Monitor.vue'
+import Participant from '../EventDetails/Participant.vue'
+// import EditEvent from './components/EventDetails/EditEvent.vue'
+
 export default {
   data: () => ({
       // id: this.id,
@@ -97,6 +65,13 @@ export default {
         return this.$store.getters.loadedEvent (this.id)
         console.log(this.$store.getters.loadedEvent (this.id))
       }
+    },
+    components: {
+      appDashboard:Dashboard,
+      appFloorplan:Floorplan,
+      appMonitor:Monitor,
+      appParticipant:Participant,
+      // appEditEvent:EditEvent
     }
 }
 </script>

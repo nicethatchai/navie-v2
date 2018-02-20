@@ -68,7 +68,29 @@ export default new Router({
       path: '/events/:id',
       name: 'Event',
       props: true,
-      component: Event
+      component: Event,
+      children: [
+        {
+          path: '/events/:id/dashboard',
+          name: 'Dashboard',
+          component: Dashboard
+        },
+        {
+          path: '/events/:id/floorplan',
+          name: 'Floorplan',
+          component: Floorplan
+        },
+        {
+          path: '/events/:id/monitor',
+          name: 'Monitor',
+          component: Monitor
+        },
+        {
+          path: '/events/:id/participant',
+          name: 'Participant',
+          component: Participant
+        }
+      ]
     },
     {
       path: '/profile',
@@ -76,26 +98,7 @@ export default new Router({
       component: Profile,
       beforeEnter: AuthGuard
     },
-    {
-      path: '/events/:id/dashboard',
-      name: 'Dashboard',
-      component: Dashboard
-    },
-    {
-      path: '/events/:id/floorplan',
-      name: 'Floorplan',
-      component: Floorplan
-    },
-    {
-      path: '/events/:id/monitor',
-      name: 'Monitor',
-      component: Monitor
-    },
-    {
-      path: '/events/:id/participant',
-      name: 'Participant',
-      component: Participant
-    }
+    
   ],
   mode: 'history'
 })

@@ -51,6 +51,8 @@
             v-on:click.native="dialog = true">
             <v-icon>add</v-icon>
         </v-btn>
+
+        <!-- Create Events Dialog -->
         <v-dialog v-model="dialog" name="dialog" persistent max-width="560px">
             <v-btn style="display:none" dark slot="activator">Open Dialog</v-btn>
             <v-card >
@@ -113,7 +115,6 @@
                                 </v-layout>
                             </v-layout>
                         </v-container>
-                        <!-- <small>*indicates required field</small> -->
                     </v-card-text>
                     <v-card-actions>
                     <v-spacer></v-spacer>
@@ -189,7 +190,10 @@ export default {
             })
             fileReader.readAsDataURL(files[0])
             this.image = files[0]
-        }
+        },
+        onClickView (event) {
+            this.$emit('clicked', event.title)
+    }
     },
     beforeMount() {
         this.onLoadEvents()
