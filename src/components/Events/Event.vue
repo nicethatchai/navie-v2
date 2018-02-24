@@ -12,12 +12,16 @@
           >
           <v-list dense>
             <v-list-tile @click="" v-for="item in sideMenu" :key="item.title" :to="/events/ + id + item.link">
+              <template>
+
               <v-list-tile-action>
                 <v-icon>{{item.icon}}</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>{{item.title}}</v-list-tile-title>
               </v-list-tile-content>
+                              
+              </template>
             </v-list-tile>
           </v-list>
         </v-navigation-drawer>     
@@ -49,7 +53,7 @@ export default {
         {icon: 'desktop_windows', title: 'Monitor', link: '/monitor'},
         {icon: 'map', title: 'Floorplan', link: '/floorplan'},
         {icon: 'supervisor_account', title: 'Participant', link: '/participant'},
-        {icon: 'settings', title: 'settings', link: '/settings'}
+        // {icon: 'edit', title: 'Edit Event', link: '/edit'}
       ],
       menuItem: [
           {icon: 'today', title: 'Events', link: '/events'},

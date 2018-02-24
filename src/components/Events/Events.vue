@@ -28,12 +28,13 @@
                     <v-card-title>
                         <div>
                             <!-- <span class="grey--text">{{event.date}}</span> -->
-                            <span class="red--text"> <v-icon small color="red">place</v-icon> {{event.location}}</span><br><br>
+                            <span class="red--text" > <v-icon small color="red">place</v-icon> {{event.location}}</span>
                             <p>{{event.description}}</p>
                         </div>
                     </v-card-title>
                     <v-card-actions>
-                        <v-btn flat color="orange" :to="/events/ + event.id">View</v-btn>
+                        <v-btn flat color="orange" :to="/events/ + event.id + /dashboard/">View</v-btn>
+                        <!-- <v-btn flat color="orange" >Edit</v-btn> -->
                         <v-spacer></v-spacer>
                         <span class="grey--text">{{event.date}}</span>
                         <!-- <v-btn flat color="orange">Explore</v-btn> -->
@@ -170,7 +171,9 @@ export default {
                 date: this.date
             }
             this.$store.dispatch('createEvent',eventData)
+            // this.onLoadEvents()
             this.$router.push('/events')
+            
         },
         onLoadEvents () {
             this.$store.dispatch('loadedEvents')
@@ -191,9 +194,9 @@ export default {
             fileReader.readAsDataURL(files[0])
             this.image = files[0]
         },
-        onClickView (event) {
-            this.$emit('clicked', event.title)
-    }
+    //     onClickView (event) {
+    //         this.$emit('clicked', event.title)
+    // }
     },
     beforeMount() {
         this.onLoadEvents()

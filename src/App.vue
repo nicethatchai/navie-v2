@@ -75,7 +75,7 @@ import Signin from './components/Home/Signin.vue'
     computed: {
       menuItems () {
         let menuItems = [
-          {icon: 'home', title: 'Home', link: '/home'},
+          {icon: 'home', title: 'Home'},
           {icon: 'file_download', title: 'Download'},
           {icon: 'account_box', title: 'About'},
           {icon: 'face', title: 'Sign up', link: '/signup'},

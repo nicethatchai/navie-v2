@@ -7,11 +7,18 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
     state: {
         loadedEvents: [],
+        loadParts: [],
         user: null,
         loading: false,
         error: null
     },
     mutations: {
+        setLoadedParts (state, payload) {
+            state.loadParts = payload
+        },
+        createPart (state, payload) {
+            state.loadParts.push(payload)
+        },
         setLoadedEvents (state, payload) {
             state.loadedEvents = payload
         },
@@ -32,6 +39,49 @@ export const store = new Vuex.Store({
         }
     },
     actions: {
+        loadedParts ({commit, getters}) {
+
+            console.log('/events/' + this.eventId + '/registers/')
+            firebase.database().ref('/events/' + this.eventId + '/registers/').once('value')
+            .then((data) => {
+                const parts = []
+                const obj = data.val()
+                for(let key in obj) {
+                    parts.push({
+                        id: key,
+                        name: obj[key].name,
+                        gender: obj[key].gender,
+                        dob: obj[key].dob,
+                    })
+                }
+                console.log(parts)
+                commit('setLoadedParts', parts)
+                commit('setLoading', false)
+            })
+            .catch((error) => {
+                console.log(error)
+                commit('setLoading', false)
+            })
+        },
+        createPart ({commit}, payload) {
+            const part = {
+                name: payload.name,
+                gender: payload.gender,
+                dob: payload.dob,
+            }
+            let key
+            firebase.database().ref('/events/' + eventId + '/registers/').push(event)
+            .then((data) => {
+                const key = data.key
+                commit('createPart',{ 
+                ...part,
+                id: key
+                })
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+        },
         loadedEvents ({commit}) {
             commit('setLoading', true)
             firebase.database().ref('events').once('value')
@@ -39,15 +89,17 @@ export const store = new Vuex.Store({
                 const events = []
                 const obj = data.val()
                 for(let key in obj) {
-                    events.push({
-                        id: key,
-                        title: obj[key].title,
-                        location: obj[key].location,
-                        date: obj[key].date,
-                        description: obj[key].description,
-                        imageUrl: obj[key].imageUrl,
-                        creatorId: obj[key].creatorId
-                    })
+                    if(obj[key].creatorId===this.state.user.id) {
+                        events.push({
+                            id: key,
+                            title: obj[key].title,
+                            location: obj[key].location,
+                            date: obj[key].date,
+                            description: obj[key].description,
+                            imageUrl: obj[key].imageUrl,
+                            creatorId: obj[key].creatorId
+                        })
+                    }
                 }
                 commit('setLoadedEvents', events)
                 commit('setLoading', false)
@@ -58,7 +110,7 @@ export const store = new Vuex.Store({
             })
         },
         createEvent ({commit, getters}, payload) {
-            const eventt = {
+            const event = {
                 title: payload.title,
                 location: payload.location,
                 description: payload.description,
@@ -68,8 +120,8 @@ export const store = new Vuex.Store({
             }
             let imageUrl
             let key
-            // reach to firebase
-            firebase.database().ref('events').push(eventt)
+            
+            firebase.database().ref('events').push(event)
             .then((data) => {
                 key = data.key
                 return key

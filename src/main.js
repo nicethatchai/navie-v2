@@ -3,6 +3,8 @@ import App from './App'
 import router from './router'
 import * as firebase from 'firebase'
 import {store} from './store'
+import VueCharts from 'vue-chartjs'
+import { Bar, Line } from 'vue-chartjs'
 
 import {
   Vuetify,
@@ -25,6 +27,7 @@ import {
   VTabs,
   VDataTable,
   VMenu,
+  VDivider,
   VTooltip,
   VPagination,
   transitions
@@ -53,6 +56,7 @@ Vue.use(Vuetify, {
     VTabs,
     VDataTable,
     VMenu,
+    VDivider,
     VTooltip,
     VPagination,
     transitions

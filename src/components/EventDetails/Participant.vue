@@ -49,6 +49,7 @@
       :items="items"
       hide-actions
       :search="search"
+      :pagination.sync="pagination"
       disable-initial-sort
       class="elevation-1"
     >
@@ -86,17 +87,21 @@
       v-on:click.native="dialog = true">
       <v-icon>add</v-icon>
     </v-btn>
+    <div class="text-xs-center pt-2">
+      <v-pagination v-model="pagination.page" :length="pages"></v-pagination>
+    </div>
   </div>
 </template>
 
 
 <script>
   export default {
+    props:['eventid'],
     data: () => ({
       search: '',
       dialog: false,
       pagination: {
-        // rowsPerPage:8
+        rowsPerPage:8
       },
       selected: [],
       headers: [
@@ -158,8 +163,7 @@
             name: 'Pink Chompu',
             gender: 'Female',
             age: 22,
-          },
-          
+          }
           ],
       editedIndex: -1,
       editedItem: {
@@ -175,8 +179,17 @@
     }),
 
     computed: {
-      test() {
-        
+      part() {
+        return this.$store.getters.loadedParts
+      },
+      loading () {
+            return this.$store.getters.loading
+        },
+      pages () {
+        if (this.pagination.rowsPerPage == null ||
+          this.pagination.totalItems == null
+        ) return 0
+        return Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage)
       },
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
@@ -190,6 +203,29 @@
     },
 
     methods: {
+      // onCreatePart () {
+      //       if (!this.formIsValid) {
+      //           return
+      //       }
+      //       if (!this.image) {
+      //           return
+      //       }
+      //       const eventData = {
+      //           title: this.title,
+      //           location: this.location,
+      //           image: this.image,
+      //           description: this.description,
+      //           date: this.date
+      //       }
+      //       this.$store.dispatch('createEvent',eventData)
+      //       // this.onLoadEvents()
+      //       this.$router.push('/events')
+            
+      //   },
+        onLoadParts () {
+
+            this.$store.dispatch('loadedParts')
+        },
       editItem (item) {
         this.editedIndex = this.items.indexOf(item)
         this.editedItem = Object.assign({}, item)
@@ -217,6 +253,9 @@
         }
         this.close()
       }
+    },
+    beforeMount() {
+        this.onLoadParts()
     }
   }
 </script>

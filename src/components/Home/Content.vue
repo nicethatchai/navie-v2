@@ -1,16 +1,18 @@
 <template>
   <v-content>
       <section>
-        <v-parallax :src="require('@../../../src/assets/hero.jpeg')" height="600">
+        <v-parallax :src="require('@../../../src/assets/exhibition.jpg')" height="600">
           <v-layout
             column
             align-center
             justify-center
             class="white--text"
           >
-            <img src="../../../src/assets/vuetify.png" alt="Vuetify.js" height="200">
-            <h1 class="white--text mb-2 display-1 text-xs-center">Information Management System for Exhibition using Location-Based Services</h1>
-            <div class="subheading mb-3 text-xs-center">Powered by Microsoft</div>
+            <img src="../../../src/assets/navie-icon.png" alt="Vuetify.js" height="200">
+            <br>
+            <h1 class="white--text mb-2 display-1 text-xs-center">Information Management System</h1>
+            <h1 class="white--text mb-2 display-1 text-xs-center">for Exhibition using Location-Based Services</h1>
+            <!-- <div class="subheading mb-3 text-xs-center">Powered by Microsoft</div> -->
             <!-- <v-btn
               class="blue lighten-2 mt-5"
               dark
@@ -32,9 +34,9 @@
         >
           <v-flex xs12 sm4 class="my-3">
             <div class="text-xs-center">
-              <h2 class="headline">The best way to start developing</h2>
+              <h2 class="headline">The Best Way to Manage Your Exhibition</h2>
               <span class="subheading">
-                Cras facilisis mi vitae nunc 
+                All control in one
               </span>
             </div>
           </v-flex>
@@ -93,18 +95,21 @@
       </section>
 
       <section>
-        <v-parallax :src="require('@../../../src/assets/section.jpg')" height="380">
+        <v-parallax :src="require('@../../../src/assets/gall.jpg')" height="380">
           <v-layout column align-center justify-center>
-            <div class="headline white--text mb-3 text-xs-center">Web development has never been easier</div>
-            <em>Kick-start your application today</em>
-            <v-btn
+            <div class="headline white--text mb-3 text-xs-center">Download Now to Your Andriod Device</div>
+            <em>Explore the event near you</em>
+            <!-- <v-btn
               class="blue lighten-2 mt-5"
               dark
               large
-              href="/pre-made-themes"
+              
             >
               Get Started
-            </v-btn>
+            </v-btn> -->
+            <a href="https://play.google.com/store?hl=en" target="_blank">
+              <img src="../../../src/assets/google-play-icon.png" style="height:120px;" >  
+            </a>
           </v-layout>
         </v-parallax>
       </section>

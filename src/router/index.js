@@ -13,6 +13,7 @@ import Dashboard from '@/components/EventDetails/Dashboard'
 import Floorplan from '@/components/EventDetails/Floorplan'
 import Monitor from '@/components/EventDetails/Monitor'
 import Participant from '@/components/EventDetails/Participant'
+import EditEvent from '@/components/EventDetails/EditEvent'
 import AuthGuard from './AuthGuard'
 
 Vue.use(Router)
@@ -89,6 +90,11 @@ export default new Router({
           path: '/events/:id/participant',
           name: 'Participant',
           component: Participant
+        },
+        {
+          path: '/events/:id/edit',
+          name: 'EditEvent',
+          component: EditEvent
         }
       ]
     },
