@@ -2,6 +2,7 @@
   <v-app id="inspire" >
 
     <v-toolbar dark app fixed clipped-left class="indigo darken-4">
+      <!-- Sidebar trigger -->
       <!-- <v-toolbar-side-icon @click.stop="drawer = !drawer" v-if="userIsAuthenticated"></v-toolbar-side-icon > -->
       <v-toolbar-title>
         <router-link to="/home" tag="span" style="cursor: pointer">{{header}}</router-link>
@@ -14,9 +15,6 @@
         <v-btn flat v-if="userIsAuthenticated" @click="onLockout">
           <v-icon left>exit_to_app</v-icon>
           Sign out</v-btn>
-        <!-- <v-btn flat v-on:click.native="dialog = true" v-if="!userIsAuthenticated">
-          <v-icon left>lock_open</v-icon>
-          Sign in</v-btn> -->
       </v-toolbar-items>
     </v-toolbar>
 
@@ -38,6 +36,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
     <v-content>
           <router-view></router-view>
     </v-content>
@@ -75,7 +74,7 @@ import Signin from './components/Home/Signin.vue'
     computed: {
       menuItems () {
         let menuItems = [
-          {icon: 'home', title: 'Home'},
+          {icon: 'home', title: 'Home', link: '/home'},
           {icon: 'file_download', title: 'Download'},
           {icon: 'account_box', title: 'About'},
           {icon: 'face', title: 'Sign up', link: '/signup'},

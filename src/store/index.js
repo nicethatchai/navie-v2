@@ -7,30 +7,56 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
     state: {
         loadedEvents: [],
+        loadedGraphs: [],
+        loadedMaps: [],
+        loadedFloorplan: [],
         loadParts: [],
         user: null,
         loading: false,
         error: null
     },
     mutations: {
-        setLoadedParts (state, payload) {
-            state.loadParts = payload
-        },
-        createPart (state, payload) {
-            state.loadParts.push(payload)
-        },
+        // setLoadedParts (state, payload) {
+        //     state.loadParts = payload
+        // },
+        // createPart (state, payload) {
+        //     state.loadParts.push(payload)
+        // },
         setLoadedEvents (state, payload) {
             state.loadedEvents = payload
         },
         createEvent (state, payload) {
             state.loadedEvents.push(payload)
         },
+        updateEvent (state, payload) {
+            const event = state.loadedEvents.find(event => {
+                return event.id === payload.id
+            })
+            if (payload.title) {
+                event.title = payload.title
+            }
+            if (payload.description) {
+                event.description = payload.description
+            }
+            if (payload.date) {
+                event.date = payload.date
+            }
+            if (payload.location) {
+                event.location = payload.location
+            }
+        },
+
+
         setUser (state, payload) {
             state.user = payload
         },
+
+
         setLoading (state, payload) {
             state.loading = payload
         },
+
+
         setError (state, payload) {
             state.error = payload
         },
@@ -39,49 +65,50 @@ export const store = new Vuex.Store({
         }
     },
     actions: {
-        loadedParts ({commit, getters}) {
+        // loadedParts ({commit, getters}) {
 
-            console.log('/events/' + this.eventId + '/registers/')
-            firebase.database().ref('/events/' + this.eventId + '/registers/').once('value')
-            .then((data) => {
-                const parts = []
-                const obj = data.val()
-                for(let key in obj) {
-                    parts.push({
-                        id: key,
-                        name: obj[key].name,
-                        gender: obj[key].gender,
-                        dob: obj[key].dob,
-                    })
-                }
-                console.log(parts)
-                commit('setLoadedParts', parts)
-                commit('setLoading', false)
-            })
-            .catch((error) => {
-                console.log(error)
-                commit('setLoading', false)
-            })
-        },
-        createPart ({commit}, payload) {
-            const part = {
-                name: payload.name,
-                gender: payload.gender,
-                dob: payload.dob,
-            }
-            let key
-            firebase.database().ref('/events/' + eventId + '/registers/').push(event)
-            .then((data) => {
-                const key = data.key
-                commit('createPart',{ 
-                ...part,
-                id: key
-                })
-            })
-            .catch((error) => {
-                console.log(error)
-            })
-        },
+        //     console.log('/events/' + this.eventId + '/registers/')
+        //     firebase.database().ref('/events/' + this.eventId + '/registers/').once('value')
+        //     .then((data) => {
+        //         const parts = []
+        //         const obj = data.val()
+        //         for(let key in obj) {
+        //             parts.push({
+        //                 id: key,
+        //                 name: obj[key].name,
+        //                 gender: obj[key].gender,
+        //                 dob: obj[key].dob,
+        //             })
+        //         }
+        //         console.log(parts)
+        //         commit('setLoadedParts', parts)
+        //         commit('setLoading', false)
+        //     })
+        //     .catch((error) => {
+        //         console.log(error)
+        //         commit('setLoading', false)
+        //     })
+        // },
+        // createPart ({commit}, payload) {
+        //     const part = {
+        //         name: payload.name,
+        //         gender: payload.gender,
+        //         dob: payload.dob,
+        //     }
+        //     let key
+        //     firebase.database().ref('/events/' + eventId + '/registers/').push(event)
+        //     .then((data) => {
+        //         const key = data.key
+        //         commit('createPart',{ 
+        //         ...part,
+        //         id: key
+        //         })
+        //     })
+        //     .catch((error) => {
+        //         console.log(error)
+        //     })
+        // },
+
         loadedEvents ({commit}) {
             commit('setLoading', true)
             firebase.database().ref('events').once('value')
@@ -146,6 +173,32 @@ export const store = new Vuex.Store({
                 console.log(error)
             })
         },
+        updateEventData ({commit}, payload) {
+            commit('setLoading', true)
+            const updateObj = {}
+            if (payload.title) {
+                updateObj.title = payload.title
+            }
+            if (payload.description) {
+                updateObj.description = payload.description
+            }
+            if (payload.location) {
+                updateObj.location = payload.location
+            }
+            if (payload.date) {
+                updateObj.date = payload.date
+            }
+            firebase.database().ref('events').child(payload.id).update(updateObj)
+                .then(() => {
+                    commit('setLoading', flase)
+                    commit('updateEvent', payload)
+                })
+                .catch(error => {
+                    console.log(error)
+                    commit('setLoading', false)
+                })
+        },
+
         signUserUp ({commit}, payload) {
             commit('setLoading', true)
             commit('clearError')
@@ -156,8 +209,7 @@ export const store = new Vuex.Store({
                     user => {
                         commit('setLoading', false)
                         const newUser = {
-                            id: user.uid,
-                            registeredEvents: []
+                            id: user.uid
                         }
                         firebase.database().ref('users/'+ newUser.id).set({
                             name:payload.name,
@@ -175,11 +227,6 @@ export const store = new Vuex.Store({
                         console.log(error)
                     }
                 )
-            // console.log(uid)
-            // var cuser = firebase.auth().currentUser;
-            // firebase.database().ref('users/'+ id).set(user);
-            // console.log('Add user to firebase')
-            // firebase.database().ref('users/' + newUser.id).push(user)
         },
         signUserIn ({commit}, payload) {
             commit('setLoading', true)
@@ -189,8 +236,7 @@ export const store = new Vuex.Store({
                     user => {
                         commit('setLoading', false)
                         const newUser = {
-                            id: user.uid,
-                            registeredEvents: []
+                            id: user.uid
                         }
                         commit('setUser', newUser)
                     }
@@ -204,12 +250,13 @@ export const store = new Vuex.Store({
                 )
         },
         autoSignin ({commit}, payload) {
-            commit('setUser', {id: payload.uid, registeredEvents: []})
+            commit('setUser', {id: payload.uid})
         },
         logout ({commit}) {
             firebase.auth().signOut()
             commit('setUser', null)
         },
+        
         clearError ({commit}) {
             commit('clearError')
         }

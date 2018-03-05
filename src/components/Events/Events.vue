@@ -34,7 +34,7 @@
                     </v-card-title>
                     <v-card-actions>
                         <v-btn flat color="orange" :to="/events/ + event.id + /dashboard/">View</v-btn>
-                        <!-- <v-btn flat color="orange" >Edit</v-btn> -->
+                        <app-edit-event :event="event"></app-edit-event>
                         <v-spacer></v-spacer>
                         <span class="grey--text">{{event.date}}</span>
                         <!-- <v-btn flat color="orange">Explore</v-btn> -->
@@ -61,6 +61,7 @@
                     <v-card-title>
                         <h4 class="headline">Create A New Event</h4>
                     </v-card-title>
+                    <v-divider></v-divider>
                     <v-card-text>
                         <v-container grid-list-md>
                             <v-layout wrap>
@@ -110,7 +111,7 @@
                                 <v-layout >
                                 <v-flex xs12 sm6 md4>
                                     <h4>Choose Event Date</h4>
-                                    <v-date-picker color="blue" locale="th" landscape first-day-of-week="1" v-model="date"></v-date-picker>
+                                    <v-date-picker color="blue" locale="th" landscape first-day-of-week="1" v-model="date" :reactive="reactive"></v-date-picker>
                                     <p> {{date}} </p>
                                 </v-flex>          
                                 </v-layout>
@@ -129,6 +130,10 @@
 </template>
 
 <script>
+import EditEvent from './EditEvent.vue'
+import CreateEvent from './CreateEvent.vue'
+
+
 export default {
     data () {
       return {
@@ -138,7 +143,8 @@ export default {
           imageUrl: '',
           description: '',
           date: '',
-          image: null
+          image: null,
+          reactive: false
       }
     },
     computed: {
@@ -197,6 +203,10 @@ export default {
     //     onClickView (event) {
     //         this.$emit('clicked', event.title)
     // }
+    },
+    components: {
+        appEditEvent:EditEvent,
+        appCreateEvent:CreateEvent,
     },
     beforeMount() {
         this.onLoadEvents()

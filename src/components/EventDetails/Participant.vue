@@ -87,7 +87,7 @@
       v-on:click.native="dialog = true">
       <v-icon>add</v-icon>
     </v-btn>
-    <div class="text-xs-center pt-2">
+    <div class="text-xs-center pt-2" >
       <v-pagination v-model="pagination.page" :length="pages"></v-pagination>
     </div>
   </div>
@@ -189,7 +189,8 @@
         if (this.pagination.rowsPerPage == null ||
           this.pagination.totalItems == null
         ) return 0
-        return Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage)
+        return Math.ceil(this.items.length / this.pagination.rowsPerPage)
+        
       },
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
@@ -234,7 +235,11 @@
 
       deleteItem (item) {
         const index = this.items.indexOf(item)
+        var tempPages = this.pages
         confirm('Are you sure you want to delete this item?') && this.items.splice(index, 1)
+        if(this.pages < tempPages) {
+          this.pagination.page = tempPages - 1
+        }
       },
 
       close () {
