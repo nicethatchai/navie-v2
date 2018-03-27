@@ -64,7 +64,7 @@
                         <!-- <v-btn color="red darken-1" flat @click="editedDialog = false">Delete</v-btn> -->
                     <v-spacer></v-spacer>
                         <v-btn color="red darken-1" flat @click="editedDialog = false">Cencel</v-btn>
-                        <v-btn color="blue darken-1" flat @click="onSaveChange" >Save</v-btn>
+                        <v-btn color="blue darken-1" flat :disabled="!formIsValid" @click="onSaveChange" >Save</v-btn>
                     </v-card-actions>
                 </form>
             </v-card>
@@ -81,6 +81,14 @@ export default {
             editedDescription: this.event.description,
             editedLocation: this.event.location,
         }
+    },
+    computed:  {
+        formIsValid () {
+            return this.title !== '' &&
+                this.location !== '' &&
+                this.imageUrl !== '' &&
+                this.description !== ''
+        },
     },
     methods: {
         onSaveChange () {

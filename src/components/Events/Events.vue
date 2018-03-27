@@ -27,21 +27,20 @@
                     </v-card-media>
                     <v-card-title>
                         <div>
-                            <!-- <span class="grey--text">{{event.date}}</span> -->
                             <span class="red--text" > <v-icon small color="red">place</v-icon> {{event.location}}</span>
                             <p>{{event.description}}</p>
                         </div>
                     </v-card-title>
                     <v-card-actions>
-                        <v-btn flat color="orange" :to="/events/ + event.id + /dashboard/">View</v-btn>
+                        <v-btn flat color="orange" :to="/events/ + event.id + /participant/">View</v-btn>
                         <app-edit-event :event="event"></app-edit-event>
                         <v-spacer></v-spacer>
                         <span class="grey--text">{{event.date}}</span>
-                        <!-- <v-btn flat color="orange">Explore</v-btn> -->
                     </v-card-actions>
                 </v-card>
             </v-flex>
         </v-layout>
+
         <v-btn
             fixed
             dark
@@ -90,12 +89,6 @@
                                     ref="fileInput" 
                                     accept="image/*"
                                     @change="onFilePicked">
-                                <!-- <v-text-field
-                                    name="imageUrl" 
-                                    label="Image Url"
-                                    id="imageUrl" 
-                                    required
-                                    v-model="imageUrl"></v-text-field> -->
                                 </v-flex>
                                 <v-flex xs12>
                                     <img :src="imageUrl" height="140">
@@ -131,7 +124,6 @@
 
 <script>
 import EditEvent from './EditEvent.vue'
-import CreateEvent from './CreateEvent.vue'
 
 
 export default {
@@ -177,7 +169,6 @@ export default {
                 date: this.date
             }
             this.$store.dispatch('createEvent',eventData)
-            // this.onLoadEvents()
             this.$router.push('/events')
             
         },
@@ -200,13 +191,9 @@ export default {
             fileReader.readAsDataURL(files[0])
             this.image = files[0]
         },
-    //     onClickView (event) {
-    //         this.$emit('clicked', event.title)
-    // }
     },
     components: {
-        appEditEvent:EditEvent,
-        appCreateEvent:CreateEvent,
+        appEditEvent:EditEvent
     },
     beforeMount() {
         this.onLoadEvents()

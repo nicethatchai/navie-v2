@@ -1,9 +1,42 @@
 <template>
-   <v-container grid-list-xl >
-        <v-layout wrap mb-4 >
-            <v-flex xs12 sm6 md4 mb-1>
-                      <img style="height:600px;" src="https://scontent.fbkk10-1.fna.fbcdn.net/v/t34.0-0/s261x260/28383209_1787278207996460_1462678193_n.png?oh=e32aad4bcdc324b06367bf4f76f9f7c8&oe=5A927E0E" alt="">
-            </v-flex>
-        </v-layout>
-    </v-container>
+    <div>
+        
+
+        {{event.id}}
+
+    </div>
 </template>
+
+<script>
+
+
+export default {
+  data: () => ({
+      items: [
+          'web', 'shopping', 'videos', 'images', 'news'
+        ],
+      sideMenu: [
+        {icon: 'equalizer', title: 'Dashboard', link: '/dashboard'},
+        {icon: 'desktop_windows', title: 'Monitor', link: '/monitor'},
+        {icon: 'map', title: 'Floorplan', link: '/floorplan'},
+        {icon: 'supervisor_account', title: 'Participant', link: '/participant'},
+        // {icon: 'edit', title: 'Edit Event', link: '/edit'}
+      ],
+      menuItem: [
+          {icon: 'today', title: 'Events', link: '/events'},
+          {icon: 'person', title: 'Profile', link: '/profile'},
+          {icon: 'exit_to_app', title: 'Sign out'}
+      ]
+    }),
+    props: [
+      'id'
+    ],
+    computed: {
+      event () {
+        return this.$store.getters.loadedEvent(this.id)
+        // console.log(this.$store.getters.loadedEvent (this.id))
+      }
+    },
+}
+</script>
+

@@ -5,7 +5,7 @@
                 <v-card>
         <v-card-media
           height="300px"
-          src="https://scontent.fbkk10-1.fna.fbcdn.net/v/t34.0-12/28383209_1787278207996460_1462678193_n.png?oh=40a1e0a0c9e38d4bf072f2dc78cd08bf&oe=5A92819E"
+          src="https://scontent.fbkk1-3.fna.fbcdn.net/v/t1.0-0/29136707_1738762489495999_7965516849049763840_o.jpg?_nc_fx=fbkk1-5&_nc_eui2=v1%3AAeEcnXJ6ihtWxd4OYZhzHGhj39PczbQ6PXFN9ZLpqycSFGIm6tivCQr0AXMYD8xaMJ4MA2Luush2iuLrX8N0Wk0QgkIek75wxYqGf9LRjpm3-A&oh=195bc691eaf6d2f02367a9b163cc84a0&oe=5B487251"
         >
           <!-- <v-container fill-height fluid>
             <v-layout fill-height>
@@ -17,7 +17,7 @@
         </v-card-media>
         <v-card-title>
           <div>
-            <span class="grey--text">CPE 4th floor</span>
+            <span class="grey--text">NSC 2018</span>
             <!-- <span>Whitehaven Beach</span><br>
             <span>Whitsunday Island, Whitsunday Islands</span> -->
           </div>

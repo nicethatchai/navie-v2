@@ -1,34 +1,52 @@
 <template>
   <div>
     
-    <v-dialog v-model="dialog" max-width="500px">
+    <v-dialog v-model="dialog" max-width="600px">
       <!-- <v-btn color="primary" dark slot="activator" class="mb-2">New Item</v-btn> -->
       <v-card>
-        <v-card-title>
-          <span class="headline">{{ formTitle }}</span>
-        </v-card-title>
+        <form @submit.prevent="onCreatePart">
+          <v-card-title>
+            <span class="headline">{{ formTitle }}</span>
+          </v-card-title>
 
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-              <v-flex xs12 sm6 md4>
-                <v-text-field label="Name" v-model="editedItem.name"></v-text-field>
-              </v-flex>
-              <v-flex xs12 sm6 md4>
-                <v-text-field label="Gender" v-model="editedItem.gender"></v-text-field>
-              </v-flex>
-              <v-flex xs12 sm6 md4>
-                <v-text-field label="Date of birth" v-model="editedItem.age"></v-text-field>
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-card-text>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex xs12 sm6 md4 mb-1>
+                  <v-text-field label="Name" v-model="name"></v-text-field>
+                </v-flex>
+                         <v-flex xs12 sm6 md4 mb-1 >
+                  <v-text-field label="Age" v-model="age"></v-text-field>
+                    <!-- <h4>Date of Birth</h4>
+                    <v-date-picker color="blue" locale="th" first-day-of-week="1" v-model="editedItem.age" :reactive="reactive"></v-date-picker> -->
+                    <!-- <p> {{date}} </p> -->
+                </v-flex> 
+                <v-flex xs12 sm6 md4 mb-1>
+                  <!-- <v-text-field label="Gender" v-model="editedItem.gender"></v-text-field> -->
+                  <v-card-text>
+                    <v-radio-group v-model="gender">
+                        <v-radio 
+                        label="Male" 
+                        value="Male"
+                        color="indigo" ></v-radio>
+                        <v-radio 
+                        label="Female" 
+                        value="Female"
+                        color="pink"></v-radio>
+                    </v-radio-group>
+                </v-card-text>
+                </v-flex>
+       
+              </v-layout>
+            </v-container>
+          </v-card-text>
 
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-          <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
-        </v-card-actions>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+            <v-btn color="blue darken-1" :disabled="!formIsValid" flat @click.native="dialog = false" type="submit">Save</v-btn>
+          </v-card-actions>
+        </form>
       </v-card>
     </v-dialog>
 
@@ -87,6 +105,18 @@
       v-on:click.native="dialog = true">
       <v-icon>add</v-icon>
     </v-btn>
+
+    <!-- <v-btn
+      fixed
+      dark
+      fab
+      top
+      right
+      color="pink"
+      v-on:click.native="testFetch()">
+      <v-icon>add</v-icon>
+    </v-btn> -->
+
     <div class="text-xs-center pt-2" >
       <v-pagination v-model="pagination.page" :length="pages"></v-pagination>
     </div>
@@ -95,10 +125,15 @@
 
 
 <script>
+import * as firebase from 'firebase'
+
   export default {
-    props:['eventid'],
+    props:['id'],
     data: () => ({
       search: '',
+      name:'Nice',
+      gender: 'Male',
+      age: '22',
       dialog: false,
       pagination: {
         rowsPerPage:8
@@ -122,49 +157,7 @@
             gender: 'Male',
             age: 21,
           },
-          {
-            value: false,
-            name: 'Thatchai Chuaubon',
-            gender: 'Male',
-            age: 22,
-          },
-          {
-            value: false,
-            name: 'Narinrat Rongsawan',
-            gender: 'Female',
-            age: 22,
-          },
-          {
-            value: false,
-            name: 'Watchanan Chantapakul',
-            gender: 'Male',
-            age: 21,
-          },
-          {
-            value: false,
-            name: 'Piluck Chokdee',
-            gender: 'Female',
-            age: 21,
-          },
-          {
-            value: false,
-            name: 'Tananut Panyagosa',
-            gender: 'Male',
-            age: 22,
-          },
-          {
-            value: false,
-            name: 'Igris Chor',
-            gender: 'Female',
-            age: 20,
-          },
-          {
-            value: false,
-            name: 'Pink Chompu',
-            gender: 'Female',
-            age: 22,
-          }
-          ],
+           ],
       editedIndex: -1,
       editedItem: {
         name: '',
@@ -173,8 +166,8 @@
       },
       defaultItem: {
         name: '',
-        gender: 0,
-        age: 0,
+        gender: '',
+        age: '',
       }
     }),
 
@@ -182,6 +175,11 @@
       part() {
         return this.$store.getters.loadedParts
       },
+      formIsValid () {
+            return this.name !== '' &&
+                this.gender !== '' &&
+                this.age !== '' 
+        },
       loading () {
             return this.$store.getters.loading
         },
@@ -193,7 +191,7 @@
         
       },
       formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+        return this.editedIndex === -1 ? 'New Participant' : 'Edit Partcipant'
       }
     },
 
@@ -204,28 +202,35 @@
     },
 
     methods: {
-      // onCreatePart () {
-      //       if (!this.formIsValid) {
-      //           return
-      //       }
-      //       if (!this.image) {
-      //           return
-      //       }
-      //       const eventData = {
-      //           title: this.title,
-      //           location: this.location,
-      //           image: this.image,
-      //           description: this.description,
-      //           date: this.date
-      //       }
-      //       this.$store.dispatch('createEvent',eventData)
-      //       // this.onLoadEvents()
-      //       this.$router.push('/events')
+      testFetch() {
+        console.log('test')
+        return firebase.database().ref('events').child(this.id).child('registers').once('value').then(function(snapshot) {
+          snapshot.forEach(function(childSnapshot) {
+            var users = childSnapshot.val();
+            console.log(users)
+          });
+          
+        });
+      },
+      onCreatePart () {
+            console.log('Create Participant')
+            if (!this.formIsValid) {
+                return
+            }
+            const partData = {
+                id: this.id,
+                name: this.name,
+                age: this.age,
+                gender: this.gender,
+            }
+            console.log(partData)
+            this.$store.dispatch('createPart',partData)
+            // this.onLoadEvents()
+            // this.$router.push('/events')
             
-      //   },
+        },
         onLoadParts () {
-
-            this.$store.dispatch('loadedParts')
+            this.$store.dispatch('loadedParts',{id:this.id})
         },
       editItem (item) {
         this.editedIndex = this.items.indexOf(item)
@@ -241,7 +246,11 @@
           this.pagination.page = tempPages - 1
         }
       },
-
+      // toAge(dob) {
+      //   var str = dob;
+      //   var year = str.split("-")
+      //   var age = 208
+      // },
       close () {
         this.dialog = false
         setTimeout(() => {
