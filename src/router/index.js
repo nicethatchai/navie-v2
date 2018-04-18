@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
 import Home from '@/components/Home/Home'
 import Download from '@/components/Home/Download'
 import Signin from '@/components/Home/Signin'
@@ -13,7 +12,6 @@ import Dashboard from '@/components/EventDetails/Dashboard'
 import Floorplan from '@/components/EventDetails/Floorplan'
 import Monitor from '@/components/EventDetails/Monitor'
 import Participant from '@/components/EventDetails/Participant'
-import EditEvent from '@/components/EventDetails/EditEvent'
 import AuthGuard from './AuthGuard'
 
 Vue.use(Router)
@@ -44,11 +42,6 @@ export default new Router({
       name: 'Signup',
       component: Signup
     },
-    {
-      path: '/helloWorld',
-      name: 'HelloWorld',
-      component: HelloWorld
-    },
     // {
     //   path: '/dashboard',
     //   name: 'Dashboard',
@@ -74,27 +67,26 @@ export default new Router({
         {
           path: '/events/:id/dashboard',
           name: 'Dashboard',
+          props: true,
           component: Dashboard
         },
         {
           path: '/events/:id/floorplan',
           name: 'Floorplan',
+          props: true,
           component: Floorplan
         },
         {
           path: '/events/:id/monitor',
           name: 'Monitor',
+          props: true,
           component: Monitor
         },
         {
           path: '/events/:id/participant',
           name: 'Participant',
+          props: true,
           component: Participant
-        },
-        {
-          path: '/events/:id/edit',
-          name: 'EditEvent',
-          component: EditEvent
         }
       ]
     },

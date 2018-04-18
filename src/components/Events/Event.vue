@@ -13,7 +13,6 @@
           <v-list dense>
             <v-list-tile @click="" v-for="item in sideMenu" :key="item.title" :to="/events/ + id + item.link">
               <template>
-
               <v-list-tile-action>
                 <v-icon>{{item.icon}}</v-icon>
               </v-list-tile-action>
@@ -25,28 +24,16 @@
             </v-list-tile>
           </v-list>
         </v-navigation-drawer>     
+    <router-view id="id"></router-view>
     
-    <!-- {{ event.title }} -->
-
-    <router-view></router-view>
 
     </div>
 </template>
 
 <script>
-import Dashboard from '../EventDetails/Dashboard.vue'
-import Floorplan from '../EventDetails/Floorplan.vue'
-import Monitor from '../EventDetails/Monitor.vue'
-import Participant from '../EventDetails/Participant.vue'
-// import EditEvent from './components/EventDetails/EditEvent.vue'
 
 export default {
   data: () => ({
-      // id: this.id,
-      items: [
-          'web', 'shopping', 'videos', 'images', 'news'
-        ],
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
       drawer: true,
       sideMenu: [
         {icon: 'equalizer', title: 'Dashboard', link: '/dashboard'},
@@ -64,19 +51,7 @@ export default {
     props: [
       'id'
     ],
-    computed: {
-      event () {
-        return this.$store.getters.loadedEvent (this.id)
-        console.log(this.$store.getters.loadedEvent (this.id))
-      }
-    },
-    components: {
-      appDashboard:Dashboard,
-      appFloorplan:Floorplan,
-      appMonitor:Monitor,
-      appParticipant:Participant,
-      // appEditEvent:EditEvent
-    }
+
 }
 </script>
 

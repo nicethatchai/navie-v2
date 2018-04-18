@@ -78,11 +78,11 @@ export default {
       }
   },
   watch: {
-      user (value) {
-          if (value !== null && value !== undefined) {
-              this.$router.push('/events')
-          }
-      }
+    //   user (value) {
+    //       if (value !== null && value !== undefined) {
+    //           this.$router.push('/events')
+    //       }
+    //   }
   },
   methods: {
       onSignin () {

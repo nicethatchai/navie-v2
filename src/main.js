@@ -74,6 +74,8 @@ Vue.use(Vuetify, {
 
 Vue.config.productionTip = false
 
+
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -94,6 +96,5 @@ new Vue({
       this.$store.dispatch('autoSignin', user)
     }
   })
-  // this.$store.dispatch('loadedEvents')
   }
 })

@@ -2,7 +2,6 @@
   <v-app id="inspire" >
 
     <v-toolbar dark app fixed clipped-left class="indigo darken-4">
-      <!-- <v-toolbar-side-icon @click.stop="drawer = !drawer" v-if="userIsAuthenticated"></v-toolbar-side-icon > -->
       <v-toolbar-title>
         <router-link to="/home" tag="span" style="cursor: pointer">{{header}}</router-link>
       </v-toolbar-title>
@@ -14,41 +13,31 @@
         <v-btn flat v-if="userIsAuthenticated" @click="onLockout">
           <v-icon left>exit_to_app</v-icon>
           Sign out</v-btn>
-        <!-- <v-btn flat v-on:click.native="dialog = true" v-if="!userIsAuthenticated">
-          <v-icon left>lock_open</v-icon>
-          Sign in</v-btn> -->
       </v-toolbar-items>
     </v-toolbar>
 
     <!-- Sign in dialog -->
-    <v-dialog v-model="dialog" persistent max-width="400px">
+    <!-- <v-dialog v-model="dialog" persistent max-width="400px">
       <v-btn color="primary" dark slot="activator" style="display:none">Open Dialog</v-btn>
       <v-card>
-        <!-- <v-card-title>
-          <span class="headline">Signin</span>
-        </v-card-title> -->
-        <!-- <v-card-text> -->
           <app-signin></app-signin>
-          <!-- <small>*indicates required field</small> -->
-        <!-- </v-card-text> -->
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native="dialog = false">Close</v-btn>
           <v-btn color="blue darken-1" flat type="submit">Sign in</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
+
     <v-content>
           <router-view></router-view>
     </v-content>
-
 
   </v-app>
 </template>
 
 <script>
-import Signin from './components/Home/Signin.vue'
-// import Download from './components/Home/Download.vue'
+// import Signin from './components/Home/Signin.vue'
 
   export default {
     data: () => ({
@@ -62,20 +51,21 @@ import Signin from './components/Home/Signin.vue'
         {icon: 'supervisor_account', title: 'Participant', link: '/participant'},
         {icon: 'edit', title: 'Edit Event', link: '/settings'}
       ],
-      // menuItems: [
-      //   {icon: 'home', title: 'Home'},
-      //     {icon: 'file_download', title: 'Download'},
-      //     {icon: 'face', title: 'Sign up', link: '/signup'},
-      //     {icon: 'lock_open', title: 'Sign in', link: '/signin'},
-      //     {icon: 'today', title: 'Events', link: '/events'},
-      //     {icon: 'person', title: 'Profile', link: '/profile'},
-      //     {icon: 'exit_to_app', title: 'Sign out'}
-      // ]
     }),
+    watch: {
+      user (value) {
+          if (value !== null && value !== undefined) {
+              this.$router.push('/events')
+          }
+      }
+    },
     computed: {
+      user () {
+          return this.$store.getters.user
+      },
       menuItems () {
         let menuItems = [
-          {icon: 'home', title: 'Home'},
+          {icon: 'home', title: 'Home', link: '/home'},
           {icon: 'file_download', title: 'Download'},
           {icon: 'account_box', title: 'About'},
           {icon: 'face', title: 'Sign up', link: '/signup'},
@@ -85,7 +75,6 @@ import Signin from './components/Home/Signin.vue'
           menuItems = [
             {icon: 'today', title: 'Events', link: '/events'},
             {icon: 'person', title: 'Profile', link: '/profile'}
-            // {icon: 'exit_to_app', title: 'Sign out'}
           ]
         }
         return menuItems
@@ -103,9 +92,8 @@ import Signin from './components/Home/Signin.vue'
     props: {
       source: String
     },
-    components: {
-      appSignin:Signin,
-      // appDownload:Download
-    }
+    // components: {
+    //   appSignin:Signin,
+    // }
   }
 </script>
