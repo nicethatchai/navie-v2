@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
    <v-container grid-list-xl >
         <v-layout wrap mb-4 >
             <v-flex xs12 sm6>
@@ -43,46 +42,3 @@ import * as firebase from 'firebase'
     }
   }
 </script>
-=======
-    <div>
-        
-
-        {{event.id}}
-
-    </div>
-</template>
-
-<script>
-
-
-export default {
-  data: () => ({
-      items: [
-          'web', 'shopping', 'videos', 'images', 'news'
-        ],
-      sideMenu: [
-        {icon: 'equalizer', title: 'Dashboard', link: '/dashboard'},
-        {icon: 'desktop_windows', title: 'Monitor', link: '/monitor'},
-        {icon: 'map', title: 'Floorplan', link: '/floorplan'},
-        {icon: 'supervisor_account', title: 'Participant', link: '/participant'},
-        // {icon: 'edit', title: 'Edit Event', link: '/edit'}
-      ],
-      menuItem: [
-          {icon: 'today', title: 'Events', link: '/events'},
-          {icon: 'person', title: 'Profile', link: '/profile'},
-          {icon: 'exit_to_app', title: 'Sign out'}
-      ]
-    }),
-    props: [
-      'id'
-    ],
-    computed: {
-      event () {
-        return this.$store.getters.loadedEvent(this.id)
-        // console.log(this.$store.getters.loadedEvent (this.id))
-      }
-    },
-}
-</script>
-
->>>>>>> 63f5bdc00eea30b3a50e028fe1598e97ac807fbd
