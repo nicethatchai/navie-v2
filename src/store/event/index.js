@@ -60,7 +60,10 @@ export default {
             })
         },
         createEvent ({commit, getters}, payload) {
+<<<<<<< HEAD
             console.log(payload)
+=======
+>>>>>>> 63f5bdc00eea30b3a50e028fe1598e97ac807fbd
             const event = {
                 title: payload.title,
                 location: payload.location,
@@ -70,7 +73,10 @@ export default {
 
             }
             let imageUrl
+<<<<<<< HEAD
             let floorplanUrl
+=======
+>>>>>>> 63f5bdc00eea30b3a50e028fe1598e97ac807fbd
             let key
             
             firebase.database().ref('events').push(event)
@@ -81,7 +87,11 @@ export default {
             .then(key => {
                 const filename = payload.image.name
                 const ext = filename.slice(filename.lastIndexOf('.'))
+<<<<<<< HEAD
                 return firebase.storage().ref('events/' + key + '.' + ext).put(payload.image) 
+=======
+                return firebase.storage().ref('events/' + key + '.' + ext).put(payload.image)
+>>>>>>> 63f5bdc00eea30b3a50e028fe1598e97ac807fbd
             })
             .then(fileData => {
                 imageUrl = fileData.metadata.downloadURLs[0]

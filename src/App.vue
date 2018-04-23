@@ -2,6 +2,11 @@
   <v-app id="inspire" >
 
     <v-toolbar dark app fixed clipped-left class="indigo darken-4">
+<<<<<<< HEAD
+=======
+      <!-- Sidebar trigger -->
+      <!-- <v-toolbar-side-icon @click.stop="drawer = !drawer" v-if="userIsAuthenticated"></v-toolbar-side-icon > -->
+>>>>>>> 63f5bdc00eea30b3a50e028fe1598e97ac807fbd
       <v-toolbar-title>
         <router-link to="/home" tag="span" style="cursor: pointer">{{header}}</router-link>
       </v-toolbar-title>
@@ -27,7 +32,11 @@
           <v-btn color="blue darken-1" flat type="submit">Sign in</v-btn>
         </v-card-actions>
       </v-card>
+<<<<<<< HEAD
     </v-dialog> -->
+=======
+    </v-dialog>
+>>>>>>> 63f5bdc00eea30b3a50e028fe1598e97ac807fbd
 
     <v-content>
           <router-view></router-view>
