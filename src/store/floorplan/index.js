@@ -2,7 +2,7 @@ import * as firebase from 'firebase'
 
 export default {
   state: {
-    // loadedFloorplan: []
+    loadedFloorplan: []
   },
   mutations: {
   //   setLoadedEvents (state, payload) {

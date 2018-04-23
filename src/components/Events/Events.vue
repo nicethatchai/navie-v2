@@ -9,6 +9,7 @@
              v-if="loading"></v-progress-circular>        
             </v-flex>
         </v-layout>
+        
         <v-layout wrap mb-4 v-if="!loading">
             <v-flex xs12 sm6 md4 mb-1 v-for="event in events" :key="event.id">
                 <v-card>
