@@ -13,7 +13,7 @@
             <v-flex xs12 sm7>
               <div>
                 <v-dialog v-model="dialog" max-width="500px">
-                  <v-btn color="primary" dark slot="activator" >Add Device</v-btn>
+                  <v-btn color="success" dark slot="activator" >Add Device</v-btn>
                   <v-card>
                     <v-card-title>
                       <span class="headline">{{ formTitle }}</span>
@@ -21,8 +21,12 @@
                     <v-card-text>
                       <v-container grid-list-md>
                         <v-layout wrap>
+                          
+                          <v-flex xs12 sm6  >
+                            <v-text-field label="Label" v-model="editedItem.name"></v-text-field>
+                          </v-flex>
                           <v-flex >
-                              <v-radio-group v-model="sigType">
+                              <v-radio-group v-model="editedItem.sigType" row>
                                   <v-radio 
                                   label="Wifi" 
                                   value="Wifi"
@@ -32,9 +36,6 @@
                                   value="Beacon"
                                   color="pink"></v-radio>
                               </v-radio-group>
-                          </v-flex>
-                          <v-flex xs12>
-                            <v-text-field label="Label" v-model="editedItem.name"></v-text-field>
                           </v-flex>
                           <v-flex xs12>
                             <v-text-field label="MAC" v-model="editedItem.mac"></v-text-field>
@@ -51,7 +52,7 @@
                     <v-card-actions>
                       <v-spacer></v-spacer>
                       <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-                      <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
+                      <v-btn color="blue darken-1" flat @click.native="save" :disabled="!formIsValid">Save</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
@@ -76,9 +77,14 @@
                         <v-icon color="pink">delete</v-icon>
                       </v-btn>
                     </td>
-                  </template>
-                  <template slot="no-data">
-                    <v-btn color="primary" @click="initialize">Reset</v-btn>
+                    </template>
+                      <!-- <v-alert slot="no-results" :value="true" color="error" icon="warning">
+                      Your search for "{{ search }}" found no results.
+                    </v-alert> -->
+                    <template slot="no-data">
+                      <v-alert :value="true" color="error" icon="warning">
+                      Sorry, nothing to display here. Please add device to start project
+                      </v-alert>
                   </template>
                 </v-data-table>
               </div>
@@ -87,37 +93,22 @@
             <v-flex xs12 sm5>
               <div>
                 <v-dialog v-model="dialog2" max-width="500px">
-                  <v-btn color="primary" dark slot="activator" >Add POI</v-btn>
+                  <v-btn color="info" dark slot="activator" >Add POI</v-btn>
                   <v-card>
                     <v-card-title>
-                      <span class="headline">{{ formTitle }}</span>
+                      <span class="headline">{{ formTitle2 }}</span>
                     </v-card-title>
                     <v-card-text>
                       <v-container grid-list-md>
                         <v-layout wrap>
-                          <v-flex >
-                              <v-radio-group v-model="sigType">
-                                  <v-radio 
-                                  label="Wifi" 
-                                  value="Wifi"
-                                  color="indigo" ></v-radio>
-                                  <v-radio 
-                                  label="Beacon" 
-                                  value="Beacon"
-                                  color="pink"></v-radio>
-                              </v-radio-group>
-                          </v-flex>
                           <v-flex xs12>
-                            <v-text-field label="Label" v-model="editedItem.name"></v-text-field>
-                          </v-flex>
-                          <v-flex xs12>
-                            <v-text-field label="MAC" v-model="editedItem.mac"></v-text-field>
+                            <v-text-field label="Name" v-model="editedItem2.name"></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field label="X" v-model="editedItem.x"></v-text-field>
+                            <v-text-field label="X" v-model="editedItem2.x"></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field label="Y" v-model="editedItem.y"></v-text-field>
+                            <v-text-field label="Y" v-model="editedItem2.y"></v-text-field>
                           </v-flex>
                         </v-layout>
                       </v-container>
@@ -125,59 +116,39 @@
                     <v-card-actions>
                       <v-spacer></v-spacer>
                       <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-                      <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
+                      <v-btn color="blue darken-1" flat @click.native="savePOI" :disabled="!formPOIIsValid">Save</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
                 
                 <v-data-table
                   :headers="headers2"
-                  :items="items"
+                  :items="items2"
                   hide-actions
                   class="elevation-1"
                 >
                   <template slot="items" slot-scope="props">
                     <td>{{ props.item.name }}</td>
-                    <!-- <td class="text-xs-right">{{ props.item.mac }}</td> -->
-                    <!-- <td class="text-xs-right">{{ props.item.sigType }}</td> -->
                     <td class="text-xs-right">{{ props.item.x }}</td>
                     <td class="text-xs-right">{{ props.item.y }}</td>
                     <td class="text-xs-right">
-                      <v-btn icon  @click="editItem(props.item)">
+                      <v-btn icon  @click="editItem2(props.item)">
                         <v-icon color="teal">edit</v-icon>
                       </v-btn>
-                      <v-btn icon  @click="deleteItem(props.item)">
+                      <v-btn icon  @click="deleteItem2(props.item)">
                         <v-icon color="pink">delete</v-icon>
                       </v-btn>
                     </td>
                   </template>
                   <template slot="no-data">
-                    <v-btn color="primary" @click="initialize">Reset</v-btn>
+                      <v-alert :value="true" color="error" icon="warning">
+                      Sorry, nothing to display here :(
+                      </v-alert>
                   </template>
                 </v-data-table>
               </div>
             </v-flex>
         </v-layout>
-         
-
-        <v-btn
-            fixed
-            dark
-            fab
-            bottom
-            right
-            color="pink"
-            v-on:click.native="loadFloorplan"
-            v-if="image==null">
-            <v-icon>add</v-icon>
-        </v-btn>
-        <!-- <input 
-          type="file" 
-          style="display:none" 
-          ref="fileInput" 
-          accept="image/*"
-          @change="onFilePicked"> -->
-
         
     </v-container>
 </template>
@@ -193,9 +164,7 @@ import * as firebase from 'firebase'
     data: () => ({
       image: null,
       imageUrl: '',
-      temp: 'https://scontent.fbkk14-1.fna.fbcdn.net/v/t1.15752-9/31295508_1781331245239123_3988253012693876736_n.png?_nc_cat=0&oh=ef4b0c4d4d8482b7cefba9c5f70c58f6&oe=5B69AEC0',
       dialog: false,
-      sigType: '',
       headers: [
         {
           text: 'Label',
@@ -204,7 +173,7 @@ import * as firebase from 'firebase'
           value: 'name'
         },
         { text: 'MAC', value: 'mac',sortable: false },
-        { text: 'Type', value: 'sigType' },
+        { text: 'Type', value: 'sigType',sortable: false },
         { text: 'X', value: 'x',sortable: false },
         { text: 'Y', value: 'y',sortable: false },
         { text: '', value: 'name', sortable: false }
@@ -215,20 +184,20 @@ import * as firebase from 'firebase'
         name: '',
         mac: '',
         sigType: '',
-        x: 0,
-        y: 0,
+        x: '',
+        y: '',
       },
       defaultItem: {
         name: '',
         mac: '',
         sigType: '',
-        x: 0,
-        y: 0,
+        x: '',
+        y: '',
       },
       dialog2: false,
       headers2: [
         {
-          text: 'Label',
+          text: 'Name',
           align: 'left',
           sortable: false,
           value: 'name'
@@ -243,34 +212,41 @@ import * as firebase from 'firebase'
       editedIndex2: -1,
       editedItem2: {
         name: '',
-        mac: '',
-        sigType: '',
-        x: 0,
-        y: 0,
+        x: '',
+        y: '',
       },
       defaultItem2: {
         name: '',
-        mac: '',
-        sigType: '',
-        x: 0,
-        y: 0,
+        x: '',
+        y: '',
       },
 
     }),
 
     computed: {
+      formIsValid () {
+            return this.editedItem.name !== '' &&
+                this.editedItem.x !== '' &&
+                this.editedItem.y !== '' 
+        },
+      formPOIIsValid () {
+            return this.editedItem2.name !== '' &&
+                this.editedItem2.x !== '' &&
+                this.editedItem2.y !== '' 
+        },
       loadFloorplan() {
-        console.log('loading')
         var floorplanUrl = ''
         var data = firebase.database().ref('events/' + this.id + '/floorplanUrl').once('value')
             .then(data => {
-              console.log(data.val())
               this.imageUrl = data.val()
           })
           // this.items = items
       },
       formTitle () {
         return this.editedIndex === -1 ? 'New Device' : 'Edit Device'
+      },
+      formTitle2 () {
+        return this.editedIndex2 === -1 ? 'New POI' : 'Edit POI'
       }
     },
 
@@ -280,139 +256,142 @@ import * as firebase from 'firebase'
       }
     },
 
-    created () {
-      this.initialize()
-    },
-
     methods: {
-        
-      initialize () {
-        this.items = [
-          {
-            name: 'In lil',
-            mac: '00:11:3b:0d:05:29',
-            sigType: 'Wifi',
-            x: 8,
-            y: 11,
-          },
-          {
-            name: 'In LInw',
-            mac: '00:3a:99:05:f4:f0',
-            sigType: 'Wifi',
-            x: 8,
-            y: 11,
-          },
-          {
-            name: 'Fr ISNE',
-            mac: '00:3a:99:40:44:b0',
-            sigType: 'Wifi',
-            x: 20,
-            y: 14,
-          },
-          {
-            name: 'Fr R412',
-            mac: '0c:f5:a4:41:80:df',
-            sigType: 'Wifi',
-            x: 7,
-            y: 4,
-          },
-          {
-            name: 'Fr R416',
-            mac: '50:67:ae:c2:41:1f',
-            sigType: 'Wifi',
-            x: 13,
-            y: 9,
-          },
-          {
-            name: 'Fr R402',
-            mac: '94:d4:69:fc:8d:60',
-            sigType: 'Wifi',
-            x: 23,
-            y: 17,
-          },
-          {
-            name: 'In AARR',
-            mac: '94:d4:69:fc:cc:a0',
-            sigType: 'Wifi',
-            x: 3,
-            y: 7,
-          },
-          {
-            name: 'In lil',
-            mac: '00:11:3b:0d:05:29',
-            sigType: 'Wifi',
-            x: 8,
-            y: 11,
-          },
-          {
-            name: 'A6',
-            mac: 'c1:1e:8d:7f:4f:9b',
-            sigType: 'Beacon',
-            x: 6,
-            y: 7,
-          },
-          {
-            name: 'A5',
-            mac: 'c7:c1:4a:46:24:14',
-            sigType: 'Beacon',
-            x: 11,
-            y: 10,
-          },
-          {
-            name: 'A2',
-            mac: 'd0:ab:1a:4a:be:5f',
-            sigType: 'Beacon',
-            x: 16,
-            y: 5,
-          },
-          {
-            name: 'A4',
-            mac: 'e1:e3:55:e9:06:e3',
-            sigType: 'Beacon',
-            x: 5,
-            y: 6,
-          },
-          {
-            name: 'A3',
-            mac: 'f8:ef:d7:68:32:a5',
-            sigType: 'Beacon',
-            x: 5,
-            y: 10,
-          },
-          {
-            name: 'A1',
-            mac: 'f9:95:fd:c8:38:06',
-            sigType: 'Beacon',
-            x: 9,
-            y: 2,
-          },
-        ]
+      loadPOI() {
+        var items = []
+        var data = firebase.database().ref('events/' + this.id + '/Search').once('value')
+            .then(function(snapshot) {
+              snapshot.forEach(function(childSnapshot) {
+                var childData = childSnapshot.val()
+                items.push(childData)
+            })
+          })
+          this.items2 = items
       },
-
+      loadDevices() {
+        var items = []
+        var data = firebase.database().ref('events/' + this.id + '/Wifi').once('value')
+            .then(function(snapshot) {
+              // console.log(snapshot.val())
+              snapshot.forEach(function(childSnapshot) {
+                var childData = childSnapshot.val()
+                childData.sigType = 'Wifi'
+                childData.mac = childSnapshot.key
+                items.push(childData)
+                // console.log(childData)
+                // console.log(childSnapshot.key)
+            })
+          })
+        var data = firebase.database().ref('events/' + this.id + '/Beacon').once('value')
+            .then(function(snapshot) {
+              // console.log(snapshot.val())
+              snapshot.forEach(function(childSnapshot) {
+                var childData = childSnapshot.val()
+                childData.sigType = 'Beacon'
+                childData.mac = childSnapshot.key
+                items.push(childData)
+                // console.log(childData)
+                // console.log(childData.key)
+            })
+          })
+          this.items = items
+      },
+      addDevice () {
+            const passData = {
+              sigType: this.editedItem.sigType,
+              mac: this.editedItem.mac
+            }
+            const devData = {
+                name: this.editedItem.name,
+                x: this.editedItem.x,
+                y: this.editedItem.y,
+            }
+            if(this.editedItem.sigType==='Beacon')
+            {
+              firebase.database().ref('events').child(this.id).child('Beacon').child(this.editedItem.mac).update(devData)
+              .catch((error) => {
+                console.log(error)
+              })
+            }
+            else
+            {
+              firebase.database().ref('events').child(this.id).child('Wifi').child(this.editedItem.mac).update(devData)
+              //loadDevice()
+              .catch((error) => {
+                console.log(error)
+              })
+            }
+            // this.loadDevice(passData)
+        },
+        addPOI () {
+            let key
+            const poiData = {
+                name: this.editedItem2.name,
+                x: this.editedItem2.x,
+                y: this.editedItem2.y,
+            }
+            firebase.database().ref('events').child(this.id).child('Search').push(poiData)
+            .then((data) => {
+                key = data.key
+                firebase.database().ref('events').child(this.id).child('Search').child(key).update({key:key})
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+        },
       editItem (item) {
         this.editedIndex = this.items.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
-
+      editItem2 (item) {
+        this.editedIndex2 = this.items2.indexOf(item)
+        this.editedItem2 = Object.assign({}, item)
+        this.dialog2 = true
+      },
       deleteItem (item) {
         const index = this.items.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.items.splice(index, 1)
+        confirm('Are you sure you want to delete this device?') && this.items.splice(index, 1) && firebase.database().ref('events/' + this.id).child(item.sigType).child(item.mac).remove()
+      },
+      deleteItem2 (item) {
+        const index = this.items2.indexOf(item)
+        confirm('Are you sure you want to delete this POI?') && this.items2.splice(index, 1) && firebase.database().ref('events/' + this.id + '/Search').child(item.key).remove()
       },
 
       close () {
         this.dialog = false
+        this.dialog2 = false
         setTimeout(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedItem2 = Object.assign({}, this.defaultItem2)
           this.editedIndex = -1
+          this.editedIndex2 = -1
         }, 300)
       },
 
       save () {
         if (this.editedIndex > -1) {
+          var updateData = {
+              name: this.items[this.editedIndex].name,
+              x: this.items[this.editedIndex].x,
+              y: this.items[this.editedIndex].y,
+          }
+          firebase.database().ref('events/' + this.id).child(this.items[this.editedIndex].sigType).child(this.items[this.editedIndex].mac).remove()
+          firebase.database().ref('events/' + this.id).child(this.editedItem.sigType).child(this.editedItem.mac).update(updateData)
           Object.assign(this.items[this.editedIndex], this.editedItem)
         } else {
           this.items.push(this.editedItem)
+          this.addDevice()
+        }
+        this.close()
+      },
+      savePOI () {
+        if (this.editedIndex2 > -1) {
+          Object.assign(this.items2[this.editedIndex2], this.editedItem2)
+          firebase.database().ref('events/' + this.id + '/Search').child(this.items2[this.editedIndex2].key).update(this.editedItem2)
+        } else {
+          this.items2.push(this.editedItem2)
+          this.addPOI()
         }
         this.close()
       },
@@ -445,6 +424,8 @@ import * as firebase from 'firebase'
         },
     },
     beforeMount() {
+        this.loadDevices()
+        this.loadPOI()
         this.loadFloorplan
     }
   }

@@ -71,11 +71,11 @@
                                         <v-radio-group v-model="gender" row>
                                             <v-radio 
                                             label="Male" 
-                                            value="male"
+                                            value="Male"
                                             color="indigo" ></v-radio>
                                             <v-radio 
                                             label="Female" 
-                                            value="female"
+                                            value="Female"
                                             color="pink"></v-radio>
                                         </v-radio-group>
                                     </v-card-text>

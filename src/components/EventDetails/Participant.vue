@@ -11,14 +11,11 @@
               <v-layout wrap>
                 <v-flex xs12 sm6 md4 mb-1>
                   <v-text-field label="Name" v-model="editedItem.name" ></v-text-field>
-                  <v-date-picker color="blue" locale="th" first-day-of-week="1" v-model="editedItem.dob" landscape min="2016-06-15" max="2018-03-23" ></v-date-picker>
+                  <v-date-picker color="blue" locale="th" first-day-of-week="1" v-model="editedItem.dob" landscape :allowed-dates="allowedDates" ></v-date-picker>
                 </v-flex>
 
                 <v-flex xs12 sm6 md4 mb-1 >
                   <v-text-field label="Date of Birth" v-model="editedItem.dob" disabled></v-text-field>
-                    <!-- <h4>Date of Birth</h4> -->
-                    
-                    <!-- <p> {{date}} </p> -->
                 </v-flex>
 
                 <v-flex xs12 sm6 md4 mb-1>
@@ -76,7 +73,7 @@
         <td class="text-xs-right">{{ props.item.gender }}</td>
         <td class="text-xs-right">{{ props.item.age }}</td>
         <td class="right layout px-0">
-          <v-btn icon class="mx-0" @click="editItem(props.item)">
+          <v-btn icon class="mx-0" @click="editItem(props.item)" v-if="props.item.editable">
             <v-icon color="teal">edit</v-icon>
           </v-btn>
           <v-btn icon class="mx-0" @click="deleteItem(props.item)">
@@ -84,13 +81,14 @@
           </v-btn>
         </td>
       </template>
-      <v-alert slot="no-results" :value="true" color="error" icon="warning">
-        Your search for "{{ search }}" found no results.
-      </v-alert>
-      <template slot="no-data">
-        <v-alert :value="true" color="error" icon="warning">
-        Sorry, nothing to display here :(
-      </v-alert>
+
+        <v-alert slot="no-results" :value="true" color="error" icon="warning">
+          Your search for "{{ search }}" found no results.
+        </v-alert>
+        <template slot="no-data">
+          <v-alert :value="true" color="error" icon="warning">
+          Sorry, nothing to display here :(
+        </v-alert>
       </template>
     </v-data-table>
     
@@ -104,17 +102,6 @@
       v-on:click.native="dialog = true">
       <v-icon>add</v-icon>
     </v-btn>
-
-    <!-- <v-btn
-      fixed
-      dark
-      fab
-      top
-      right
-      color="pink"
-      v-on:click.native="testFetch()">
-      <v-icon>add</v-icon>
-    </v-btn> -->
 
     <div class="text-xs-center pt-2" >
       <v-pagination v-model="pagination.page" :length="pages"></v-pagination>
@@ -208,13 +195,38 @@ import * as firebase from 'firebase'
         var items = []
         var data = firebase.database().ref('events/' + this.id + '/registers').once('value')
             .then(function(snapshot) {
-              // console.log(snapshot.id)
               snapshot.forEach(function(childSnapshot) {
                 var childData = childSnapshot.val()
                 items.push(childData)
             })
           })
           this.items = items
+      },
+      loadParticipants() {
+        var it = this.items
+        firebase.database().ref('events/' + this.id + '/participants').once('value')
+            .then(function(snapshot) {
+              snapshot.forEach(function(childSnapshot) {
+                var childData = childSnapshot.val()
+                firebase.database().ref('users/' + childSnapshot.key).once('value')
+                .then(function(snapshot) {
+                  var birthday = new Date(snapshot.val().dob)
+                  var ageDifMs = Date.now() - birthday.getTime()
+                  var ageDate = new Date(ageDifMs);
+                  var age = Math.abs(ageDate.getUTCFullYear() - 1970)
+                  var data = {
+                    key: childSnapshot.key,
+                    dob: snapshot.val().dob,
+                    name: snapshot.val().name,
+                    age: age,
+                    gender: snapshot.val().gender,
+                    editable: false,
+                  }
+                  it.push(data)
+                })
+            })
+          })
+          this.items = it
       },
       addPart () {
             let key
@@ -223,8 +235,8 @@ import * as firebase from 'firebase'
                 name: this.editedItem.name,
                 age: this.toAge(this.editedItem.dob),
                 gender: this.editedItem.gender,
+                editable: true,
             }
-            // console.log(partData)
             firebase.database().ref('events').child(this.id).child('registers').push(partData)
             .then((data) => {
                 key = data.key
@@ -234,7 +246,6 @@ import * as firebase from 'firebase'
             .catch((error) => {
                 console.log(error)
             })
-            // this.loadPart()
         },
       editItem (item) {
         this.editedIndex = this.items.indexOf(item)
@@ -245,7 +256,13 @@ import * as firebase from 'firebase'
       deleteItem (item) {
         const index = this.items.indexOf(item)
         var tempPages = this.pages
-        confirm('Are you sure you want to delete this item?') && this.items.splice(index, 1) && firebase.database().ref('events/' + this.id + '/registers').child(item.key).remove()
+        confirm('Are you sure you want to delete this item?') && this.items.splice(index, 1)
+        if(item.editable){
+          firebase.database().ref('events/' + this.id + '/registers').child(item.key).remove()
+        }
+        else {
+          firebase.database().ref('events/' + this.id + '/participants').child(item.key).remove()
+        }        
         if(this.pages < tempPages) {
           this.pagination.page = tempPages - 1
         }
@@ -269,16 +286,19 @@ import * as firebase from 'firebase'
           this.editedItem.age = this.toAge(this.editedItem.dob)
           Object.assign(this.items[this.editedIndex], this.editedItem)
           firebase.database().ref('events/' + this.id + '/registers').child(this.items[this.editedIndex].key).update(this.editedItem)
+          
         } else {
           this.addPart()
         }
         this.close()
       },
-      allowedDates: val => parseInt(val.split('-')[2], 10) % 2 === 0
+
+      // allowedDates: val => parseInt(val.split('-')[2], 10) % 2 === 0
       
     },
     beforeMount() {
         this.loadParts()
+        this.loadParticipants()
     }
   }
 </script>
