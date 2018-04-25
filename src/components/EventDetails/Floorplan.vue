@@ -2,7 +2,8 @@
    <v-container grid-list-xl >
         <v-layout wrap mb-4 >
             <v-flex xs12>
-              <img :src="floorplanUrl[0]" height="350">
+              <img :src="floorplanUrl[0]" height="350" >
+              <img :src="imageUrl" height="350" v-if="image!=null" >
             </v-flex>
             <v-flex xs12>
               <!-- <v-btn small color="info" v-on:click.native="onPickFile">Browse</v-btn> -->
@@ -11,7 +12,7 @@
               <!-- {{floorplanUrl}}  -->
             </v-flex>
 
-            <v-flex xs12 sm7 v-if="floorplanUrl!=null">
+            <v-flex xs12 sm7 v-if="floorplanUrl[0]!=null">
               <div>
                 <v-dialog v-model="dialog" max-width="500px">
                   <v-btn color="success" dark slot="activator" >Add Device</v-btn>
@@ -89,7 +90,7 @@
               </div>
             </v-flex>
 
-            <v-flex xs12 sm5 v-if="floorplanUrl!=null">
+            <v-flex xs12 sm5 v-if="floorplanUrl[0]!=null">
               <div>
                 <v-dialog v-model="dialog2" max-width="500px">
                   <v-btn color="info" dark slot="activator" >Add POI</v-btn>
@@ -156,7 +157,7 @@
           bottom
           right
           color="pink"
-          v-if="floorplanUrl===null"
+          v-if="floorplanUrl!=null"
           v-on:click.native="onPickFile">
         <v-icon>add</v-icon>
         </v-btn>
@@ -274,13 +275,17 @@ import * as firebase from 'firebase'
         var url = firebase.database().ref('events/' + this.id + '/floorplanUrl').once('value')
           .then(function(snapshot) {
               url = snapshot.val()
-              // // console.log(snapshot.val())
-              items.push(url)
-              
+              // console.log(snapshot.val())
+              if(snapshot.val()===null){
+                items = null
+              }
+              else {
+                items.push(url)
+              }
           })
         console.log(items)
         this.floorplanUrl = items
-        // console.log(this.floorplanUrl[0])
+        // console.log(this.floorplanUrl)
       },
       loadPOI() {
         var items = []
@@ -430,6 +435,9 @@ import * as firebase from 'firebase'
                 image: this.image,
             }
             this.$store.dispatch('addFloorplan',floorplan)
+            this.floorplanUrl = this.imageUrl
+            this.image=null
+            this.imageUrl=null
         },
         onDeleteFloorplan () {
           this.image = null

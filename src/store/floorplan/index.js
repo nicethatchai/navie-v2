@@ -21,7 +21,7 @@ export default {
     
             const filename = payload.image.name
             const ext = filename.slice(filename.lastIndexOf('.'))
-            firebase.storage().ref('Floorplans/' + id + '.' + ext).put(payload.image)
+            firebase.storage().ref('Floorplans/' + id  + ext).put(payload.image)
             .then(fileData => {
                 floorplanUrl = fileData.metadata.downloadURLs[0]
                 return firebase.database().ref('events').child(id).update({floorplanUrl: floorplanUrl})
