@@ -33,7 +33,7 @@
                         </div>
                     </v-card-title>
                     <v-card-actions>
-                        <v-btn flat color="orange" :to="/events/ + event.id + /participant/">View</v-btn>
+                        <v-btn flat color="orange" :to="/events/ + event.id + /dashboard/">View</v-btn>
                         <app-edit-event :event="event"></app-edit-event>
                         <v-spacer></v-spacer>
                         <span class="grey--text">{{event.date}}</span>

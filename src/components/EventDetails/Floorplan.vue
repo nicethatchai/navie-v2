@@ -2,15 +2,16 @@
    <v-container grid-list-xl >
         <v-layout wrap mb-4 >
             <v-flex xs12>
-              <img :src="imageUrl" height="350">
+              <img :src="floorplanUrl[0]" height="350">
             </v-flex>
-            <!-- <v-flex xs12>
-              <v-btn small color="info" v-on:click.native="onPickFile">Browse</v-btn>
+            <v-flex xs12>
+              <!-- <v-btn small color="info" v-on:click.native="onPickFile">Browse</v-btn> -->
               <v-btn small color="success" v-if="image!=null" @click="onAddFloorplan">Save</v-btn>
-              <v-btn small color="error" v-if="image!=null" >delete</v-btn>
-              {{floorplanUrl}}
-            </v-flex> -->
-            <v-flex xs12 sm7>
+              <v-btn small color="error" v-if="image!=null" @click="onDeleteFloorplan">delete</v-btn>
+              <!-- {{floorplanUrl}}  -->
+            </v-flex>
+
+            <v-flex xs12 sm7 v-if="floorplanUrl!=null">
               <div>
                 <v-dialog v-model="dialog" max-width="500px">
                   <v-btn color="success" dark slot="activator" >Add Device</v-btn>
@@ -78,9 +79,7 @@
                       </v-btn>
                     </td>
                     </template>
-                      <!-- <v-alert slot="no-results" :value="true" color="error" icon="warning">
-                      Your search for "{{ search }}" found no results.
-                    </v-alert> -->
+
                     <template slot="no-data">
                       <v-alert :value="true" color="error" icon="warning">
                       Sorry, nothing to display here. Please add device to start project
@@ -90,7 +89,7 @@
               </div>
             </v-flex>
 
-            <v-flex xs12 sm5>
+            <v-flex xs12 sm5 v-if="floorplanUrl!=null">
               <div>
                 <v-dialog v-model="dialog2" max-width="500px">
                   <v-btn color="info" dark slot="activator" >Add POI</v-btn>
@@ -149,6 +148,26 @@
               </div>
             </v-flex>
         </v-layout>
+
+        <v-btn
+          fixed
+          dark
+          fab
+          bottom
+          right
+          color="pink"
+          v-if="floorplanUrl===null"
+          v-on:click.native="onPickFile">
+        <v-icon>add</v-icon>
+        </v-btn>
+
+        <input 
+          type="file" 
+          style="display:none" 
+          ref="fileInput" 
+          accept="image/*"
+          @change="onFilePicked">
+                                
         
     </v-container>
 </template>
@@ -163,7 +182,8 @@ import * as firebase from 'firebase'
           ],
     data: () => ({
       image: null,
-      imageUrl: '',
+      imageUrl: null,
+      floorplanUrl: null,
       dialog: false,
       headers: [
         {
@@ -234,14 +254,6 @@ import * as firebase from 'firebase'
                 this.editedItem2.x !== '' &&
                 this.editedItem2.y !== '' 
         },
-      loadFloorplan() {
-        var floorplanUrl = ''
-        var data = firebase.database().ref('events/' + this.id + '/floorplanUrl').once('value')
-            .then(data => {
-              this.imageUrl = data.val()
-          })
-          // this.items = items
-      },
       formTitle () {
         return this.editedIndex === -1 ? 'New Device' : 'Edit Device'
       },
@@ -257,6 +269,19 @@ import * as firebase from 'firebase'
     },
 
     methods: {
+      loadFloorplan() {
+        var items = []
+        var url = firebase.database().ref('events/' + this.id + '/floorplanUrl').once('value')
+          .then(function(snapshot) {
+              url = snapshot.val()
+              // // console.log(snapshot.val())
+              items.push(url)
+              
+          })
+        console.log(items)
+        this.floorplanUrl = items
+        // console.log(this.floorplanUrl[0])
+      },
       loadPOI() {
         var items = []
         var data = firebase.database().ref('events/' + this.id + '/Search').once('value')
@@ -406,6 +431,10 @@ import * as firebase from 'firebase'
             }
             this.$store.dispatch('addFloorplan',floorplan)
         },
+        onDeleteFloorplan () {
+          this.image = null
+          this.imageUrl = null
+        },
         onPickFile() {
             this.$refs.fileInput.click()
         },
@@ -417,16 +446,17 @@ import * as firebase from 'firebase'
             }
             const fileReader = new FileReader()
             fileReader.addEventListener('load', () => {
-                this.imageUrl = fileReader.result
+              this.imageUrl = fileReader.result
             })
             fileReader.readAsDataURL(files[0])
-            this.image = files[0]
+              this.image = files[0]
         },
     },
     beforeMount() {
-        this.loadDevices()
-        this.loadPOI()
-        this.loadFloorplan
+      this.loadFloorplan()
+      this.loadDevices()
+      this.loadPOI()
+        
     }
   }
 </script>

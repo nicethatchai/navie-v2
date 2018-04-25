@@ -25,11 +25,11 @@ import * as firebase from 'firebase'
 
     computed: {
       loadFloorplan() {
-        console.log('loading')
+        // console.log('loading')
         var floorplanUrl = ''
         var data = firebase.database().ref('events/' + this.id + '/floorplanUrl').once('value')
             .then(data => {
-              console.log(data.val())
+              // console.log(data.val())
               this.imageUrl = data.val()
           })
           // this.items = items

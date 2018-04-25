@@ -11,7 +11,8 @@
               <v-layout wrap>
                 <v-flex xs12 sm6 md4 mb-1>
                   <v-text-field label="Name" v-model="editedItem.name" ></v-text-field>
-                  <v-date-picker color="blue" locale="th" first-day-of-week="1" v-model="editedItem.dob" landscape :allowed-dates="allowedDates" ></v-date-picker>
+                  <v-date-picker color="blue" locale="th" first-day-of-week="1" v-model="editedItem.dob" landscape  ></v-date-picker>
+                  <!-- :allowed-dates="allowedDates" -->
                 </v-flex>
 
                 <v-flex xs12 sm6 md4 mb-1 >
@@ -119,9 +120,6 @@ import * as firebase from 'firebase'
     data: () => ({
       today: Date(),
       search: '',
-      name:'Nice',
-      gender: 'Male',
-      age: '22',
       dialog: false,
       pagination: {
         rowsPerPage:8
@@ -227,6 +225,7 @@ import * as firebase from 'firebase'
             })
           })
           this.items = it
+          console.log(this.item)
       },
       addPart () {
             let key
