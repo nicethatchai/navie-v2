@@ -122,7 +122,8 @@ import * as firebase from 'firebase'
       search: '',
       dialog: false,
       pagination: {
-        rowsPerPage:8
+        rowsPerPage:8,
+        // totalItems:0
       },
       selected: [],
       headers: [
@@ -164,9 +165,9 @@ import * as firebase from 'firebase'
         },
       pages () {
         if (this.pagination.rowsPerPage == null ||
-          this.pagination.totalItems == null
-        ) return 0
-        return Math.ceil(this.items.length / this.pagination.rowsPerPage)
+            this.pagination.totalItems == null
+            ) return 0
+              return Math.ceil(this.items.length / this.pagination.rowsPerPage)
         
       },
       formTitle () {
@@ -184,16 +185,16 @@ import * as firebase from 'firebase'
       loadPart(key) {
         var it = this.items
         var data = firebase.database().ref('events/' + this.id + '/registers/' + key).once('value')
-            .then(function(snapshot) {
+            .then((snapshot) => {
               it.push(snapshot.val())
           })
           this.items = it
       },
       loadParts() {
-        var items = []
+        var items = this.items
         var data = firebase.database().ref('events/' + this.id + '/registers').once('value')
-            .then(function(snapshot) {
-              snapshot.forEach(function(childSnapshot) {
+            .then((snapshot) => {
+              snapshot.forEach((childSnapshot) => {
                 var childData = childSnapshot.val()
                 items.push(childData)
             })
@@ -201,13 +202,11 @@ import * as firebase from 'firebase'
           this.items = items
       },
       loadParticipants() {
-        var it = this.items
-        firebase.database().ref('events/' + this.id + '/participants').once('value')
-            .then(function(snapshot) {
-              snapshot.forEach(function(childSnapshot) {
+        var it = []
+        firebase.database().ref('events/' + this.id + '/participants').on('value', (snapshot) => {
+          snapshot.forEach((childSnapshot) => {
                 var childData = childSnapshot.val()
-                firebase.database().ref('users/' + childSnapshot.key).once('value')
-                .then(function(snapshot) {
+                firebase.database().ref('users/' + childSnapshot.key).once('value', (snapshot) => {
                   var birthday = new Date(snapshot.val().dob)
                   var ageDifMs = Date.now() - birthday.getTime()
                   var ageDate = new Date(ageDifMs);
@@ -223,9 +222,10 @@ import * as firebase from 'firebase'
                   it.push(data)
                 })
             })
-          })
-          this.items = it
-          console.log(this.item)
+            this.items = it
+        })
+          // this.items = it
+          // console.log(this.item)
       },
       addPart () {
             let key
@@ -295,9 +295,9 @@ import * as firebase from 'firebase'
       // allowedDates: val => parseInt(val.split('-')[2], 10) % 2 === 0
       
     },
-    beforeMount() {
-        this.loadParts()
-        this.loadParticipants()
+    mounted() {
+      this.loadParticipants()
+      this.loadParts()
     }
   }
 </script>

@@ -1,10 +1,41 @@
 <template>
-   <v-container grid-list-xl >
+   <v-container fluid grid-list-xl >
+          <v-alert type="warning" :value="floorplanUrl[0]==null">
+            Please add floor plan for this event first
+          </v-alert>
+
         <v-layout wrap mb-4 >
-            <v-flex xs12>
-              <img :src="floorplanUrl[0]" height="350" >
-              <img :src="imageUrl" height="350" v-if="image!=null" >
+            <v-flex xs6>
+              <v-card>
+                <img class="currentMap" :src="floorplanUrl[0]" >
+                <!-- <img id="currentMap" src="../../static/img/cpe_floor4.png" alt=""> -->
+                <canvas id="myCanvas" v-if="floorplanUrl[0]!=null"></canvas>
+                <img class="currentMap" :src="imageUrl" height="350" v-if="image!=null" >
+              </v-card>
             </v-flex>
+            
+            <v-flex xs4>
+              <v-card>
+                <v-subheader>Floorplan Scale</v-subheader>
+                <v-card-text>
+                  <v-slider v-model="scale" @click="updateScale" prepend-icon="filter_list" :color="'info'" thumb-label step="1"></v-slider>
+                  <!-- {{scale}} -->
+                  <!-- <v-slider v-model="value2" step="0" disabled></v-slider> -->
+                </v-card-text>
+              </v-card>
+            </v-flex>
+            
+              <!-- <v-text-field
+                label="Scale"
+               ></v-text-field>
+               <v-text-field
+                label="X Max"
+               ></v-text-field>
+               <v-text-field
+                label="Y Max"
+               ></v-text-field> -->
+            
+
             <v-flex xs12>
               <!-- <v-btn small color="info" v-on:click.native="onPickFile">Browse</v-btn> -->
               <v-btn small color="success" v-if="image!=null" @click="onAddFloorplan">Save</v-btn>
@@ -25,10 +56,10 @@
                         <v-layout wrap>
                           
                           <v-flex xs12 sm6  >
-                            <v-text-field label="Label" v-model="editedItem.name"></v-text-field>
+                           <v-text-field label="Label" v-model="editedItem.name"></v-text-field>
                           </v-flex>
                           <v-flex >
-                              <v-radio-group v-model="editedItem.sigType" row>
+                              <v-radio-group v-model="editedItem.sigType" row :mandatory="false">
                                   <v-radio 
                                   label="Wifi" 
                                   value="Wifi"
@@ -40,13 +71,13 @@
                               </v-radio-group>
                           </v-flex>
                           <v-flex xs12>
-                            <v-text-field label="MAC" v-model="editedItem.mac"></v-text-field>
+                            <v-text-field label="MAC" v-model="editedItem.mac" required :rules="macRules"></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field label="X" v-model="editedItem.x"></v-text-field>
+                            <v-text-field label="X" v-model="editedItem.x" :rules="xRules"></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field label="Y" v-model="editedItem.y"></v-text-field>
+                            <v-text-field label="Y" v-model="editedItem.y" :rules="yRules"></v-text-field>
                           </v-flex>
                         </v-layout>
                       </v-container>
@@ -105,10 +136,10 @@
                             <v-text-field label="Name" v-model="editedItem2.name"></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field label="X" v-model="editedItem2.x"></v-text-field>
+                            <v-text-field label="X" v-model="editedItem2.x" :rules="xRules"></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field label="Y" v-model="editedItem2.y"></v-text-field>
+                            <v-text-field label="Y" v-model="editedItem2.y" :rules="yRules"></v-text-field>
                           </v-flex>
                         </v-layout>
                       </v-container>
@@ -150,17 +181,17 @@
             </v-flex>
         </v-layout>
 
-        <v-btn
+        <!-- <v-btn
           fixed
           dark
           fab
           bottom
           right
           color="pink"
-          v-if="floorplanUrl!=null"
+          v-if="floorplanUrl[0]!=null"
           v-on:click.native="onPickFile">
         <v-icon>add</v-icon>
-        </v-btn>
+        </v-btn> -->
 
         <input 
           type="file" 
@@ -182,10 +213,24 @@ import * as firebase from 'firebase'
       'id',
           ],
     data: () => ({
+      scale:0,
       image: null,
       imageUrl: null,
       floorplanUrl: null,
       dialog: false,
+      formHasErrors: false,
+      macRules: [
+        v => !!v || 'MAC Address is required',
+        v => /^(([A-Fa-f0-9]{2}[:]){5}[A-Fa-f0-9]{2}[,]?)+$/.test(v) || 'MAC Address is invalid'
+      ],
+      xRules: [
+         v => !!v || 'Coordinate x  is required',
+         v => /[0-9]|\./.test(v) || 'Coordinate can only be number'
+      ],
+      yRules: [
+         v => !!v || 'Coordinate y  is required',
+         v => /[0-9]|\./.test(v) || 'Coordinate can only be number'
+      ],
       headers: [
         {
           text: 'Label',
@@ -204,14 +249,14 @@ import * as firebase from 'firebase'
       editedItem: {
         name: '',
         mac: '',
-        sigType: '',
+        sigType: 'Wifi',
         x: '',
         y: '',
       },
       defaultItem: {
         name: '',
         mac: '',
-        sigType: '',
+        sigType: 'Wifi',
         x: '',
         y: '',
       },
@@ -246,14 +291,28 @@ import * as firebase from 'firebase'
 
     computed: {
       formIsValid () {
-            return this.editedItem.name !== '' &&
-                this.editedItem.x !== '' &&
+        return  this.editedItem.mac !== '' && this.editedItem.mac.match(/^(([A-Fa-f0-9]{2}[:]){5}[A-Fa-f0-9]{2}[,]?)+$/) &&
+                this.editedItem.sigType !== '' &&
+                this.editedItem.x.match(/[0-9]|\./) &&
+                this.editedItem.x !== '' && 
+                this.editedItem.y.match(/[0-9]|\./) &&
                 this.editedItem.y !== '' 
-        },
+      },
+      submit() {
+        this.formHasErrors = false
+
+        Object.keys(this.form).forEach(f => {
+          if (!this.form[f]) this.formHasErrors = true
+
+          this.$refs[f].validate(true)
+        })
+      },
       formPOIIsValid () {
-            return this.editedItem2.name !== '' &&
-                this.editedItem2.x !== '' &&
-                this.editedItem2.y !== '' 
+          return  this.editedItem2.x.match(/[0-9]|\./) &&
+                  this.editedItem2.x !== '' &&
+                  this.editedItem2.y.match(/[0-9]|\./) &&
+                  this.editedItem2.y !== '' 
+                  
         },
       formTitle () {
         return this.editedIndex === -1 ? 'New Device' : 'Edit Device'
@@ -270,12 +329,19 @@ import * as firebase from 'firebase'
     },
 
     methods: {
+      updateScale() {
+        firebase.database().ref('events/' + this.id).child('scale').set(this.scale)
+      },
+      readScale() {
+        firebase.database().ref('events/' + this.id + '/scale').on('value', (snap) => {
+          this.scale = snap.val()
+        })
+      },
       loadFloorplan() {
         var items = []
         var url = firebase.database().ref('events/' + this.id + '/floorplanUrl').once('value')
           .then(function(snapshot) {
               url = snapshot.val()
-              // console.log(snapshot.val())
               if(snapshot.val()===null){
                 items = null
               }
@@ -283,9 +349,7 @@ import * as firebase from 'firebase'
                 items.push(url)
               }
           })
-        console.log(items)
         this.floorplanUrl = items
-        // console.log(this.floorplanUrl)
       },
       loadPOI() {
         var items = []
@@ -302,26 +366,20 @@ import * as firebase from 'firebase'
         var items = []
         var data = firebase.database().ref('events/' + this.id + '/Wifi').once('value')
             .then(function(snapshot) {
-              // console.log(snapshot.val())
               snapshot.forEach(function(childSnapshot) {
                 var childData = childSnapshot.val()
                 childData.sigType = 'Wifi'
                 childData.mac = childSnapshot.key
                 items.push(childData)
-                // console.log(childData)
-                // console.log(childSnapshot.key)
             })
           })
         var data = firebase.database().ref('events/' + this.id + '/Beacon').once('value')
             .then(function(snapshot) {
-              // console.log(snapshot.val())
               snapshot.forEach(function(childSnapshot) {
                 var childData = childSnapshot.val()
                 childData.sigType = 'Beacon'
                 childData.mac = childSnapshot.key
                 items.push(childData)
-                // console.log(childData)
-                // console.log(childData.key)
             })
           })
           this.items = items
@@ -351,7 +409,6 @@ import * as firebase from 'firebase'
                 console.log(error)
               })
             }
-            // this.loadDevice(passData)
         },
         addPOI () {
             let key
@@ -460,11 +517,36 @@ import * as firebase from 'firebase'
               this.image = files[0]
         },
     },
-    beforeMount() {
+    beforeMount(){
       this.loadFloorplan()
+    },
+    mounted() {
+      // this.loadFloorplan()
+      this.readScale()
       this.loadDevices()
       this.loadPOI()
         
     }
   }
 </script>
+
+<style scoped>
+
+.currentMap {
+    position: absolute;
+    width: 550px;
+    /* height: 400px; */
+    z-index: 1;
+    /* margin: auto; */
+}
+
+#myCanvas {
+    position: relative;
+    width:550px; 
+    height: 450px;
+    /* border:1px solid #000; */
+    z-index: 20;
+}
+
+
+</style>

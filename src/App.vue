@@ -66,15 +66,15 @@
       menuItems () {
         let menuItems = [
           {icon: 'home', title: 'Home', link: '/home'},
-          {icon: 'file_download', title: 'Download'},
-          {icon: 'account_box', title: 'About'},
+          // {icon: 'file_download', title: 'Download'},
+          // {icon: 'account_box', title: 'About'},
           {icon: 'face', title: 'Sign up', link: '/signup'},
           {icon: 'lock_open', title: 'Sign in', link: '/signin'}
         ]
         if (this.userIsAuthenticated) {
           menuItems = [
             {icon: 'today', title: 'Events', link: '/events'},
-            {icon: 'person', title: 'Profile', link: '/profile'}
+            // {icon: 'person', title: 'Profile', link: '/profile'}
           ]
         }
         return menuItems

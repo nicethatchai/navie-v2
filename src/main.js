@@ -27,7 +27,9 @@ import {
   VTabs,
   VDataTable,
   VMenu,
+  VSlider,
   VDivider,
+  VSubheader,
   VTooltip,
   VPagination,
   transitions
@@ -56,7 +58,9 @@ Vue.use(Vuetify, {
     VTabs,
     VDataTable,
     VMenu,
+    VSlider,
     VDivider,
+    VSubheader,
     VTooltip,
     VPagination,
     transitions
