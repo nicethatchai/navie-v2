@@ -1,41 +1,25 @@
 <template>
    <v-container fluid grid-list-xl >
-          <v-alert type="warning" :value="floorplanUrl[0]==null">
+          <!-- <v-alert type="warning" :value="floorplanUrl==null">
             Please add floor plan for this event first
-          </v-alert>
+          </v-alert> -->
 
         <v-layout wrap mb-4 >
-            <v-flex xs6>
-              <v-card>
-                <img class="currentMap" :src="floorplanUrl[0]" >
-                <!-- <img id="currentMap" src="../../static/img/cpe_floor4.png" alt=""> -->
-                <canvas id="myCanvas" v-if="floorplanUrl[0]!=null"></canvas>
-                <img class="currentMap" :src="imageUrl" height="350" v-if="image!=null" >
-              </v-card>
+            <v-flex d-flex xs6>
+                <img id="currentMap" :src="floorplanUrl"  >
+                <canvas class="myCanvas" id="yy" ></canvas>
+                <canvas  id="xy" ></canvas>
             </v-flex>
             
-            <v-flex xs4>
+            <!-- <v-flex xs4>
               <v-card>
                 <v-subheader>Floorplan Scale</v-subheader>
                 <v-card-text>
                   <v-slider v-model="scale" @click="updateScale" prepend-icon="filter_list" :color="'info'" thumb-label step="1"></v-slider>
-                  <!-- {{scale}} -->
-                  <!-- <v-slider v-model="value2" step="0" disabled></v-slider> -->
                 </v-card-text>
               </v-card>
-            </v-flex>
-            
-              <!-- <v-text-field
-                label="Scale"
-               ></v-text-field>
-               <v-text-field
-                label="X Max"
-               ></v-text-field>
-               <v-text-field
-                label="Y Max"
-               ></v-text-field> -->
-            
-
+            </v-flex> -->
+        
             <v-flex xs12>
               <!-- <v-btn small color="info" v-on:click.native="onPickFile">Browse</v-btn> -->
               <v-btn small color="success" v-if="image!=null" @click="onAddFloorplan">Save</v-btn>
@@ -43,7 +27,7 @@
               <!-- {{floorplanUrl}}  -->
             </v-flex>
 
-            <v-flex xs12 sm7 v-if="floorplanUrl[0]!=null">
+            <v-flex xs12 sm7 v-if="floorplanUrl!=null">
               <div>
                 <v-dialog v-model="dialog" max-width="500px">
                   <v-btn color="success" dark slot="activator" >Add Device</v-btn>
@@ -121,7 +105,7 @@
               </div>
             </v-flex>
 
-            <v-flex xs12 sm5 v-if="floorplanUrl[0]!=null">
+            <v-flex xs12 sm5 v-if="floorplanUrl!=null">
               <div>
                 <v-dialog v-model="dialog2" max-width="500px">
                   <v-btn color="info" dark slot="activator" >Add POI</v-btn>
@@ -146,7 +130,7 @@
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+                      <v-btn color="blue darken-1" flat @click.native="close2">Cancel</v-btn>
                       <v-btn color="blue darken-1" flat @click.native="savePOI" :disabled="!formPOIIsValid">Save</v-btn>
                     </v-card-actions>
                   </v-card>
@@ -188,7 +172,7 @@
           bottom
           right
           color="pink"
-          v-if="floorplanUrl[0]!=null"
+          v-if="floorplanUrl!=null"
           v-on:click.native="onPickFile">
         <v-icon>add</v-icon>
         </v-btn> -->
@@ -219,6 +203,7 @@ import * as firebase from 'firebase'
       floorplanUrl: null,
       dialog: false,
       formHasErrors: false,
+      canvas: null,
       macRules: [
         v => !!v || 'MAC Address is required',
         v => /^(([A-Fa-f0-9]{2}[:]){5}[A-Fa-f0-9]{2}[,]?)+$/.test(v) || 'MAC Address is invalid'
@@ -291,12 +276,15 @@ import * as firebase from 'firebase'
 
     computed: {
       formIsValid () {
+        // console.log(this.editedItem.x.toString())  
         return  this.editedItem.mac !== '' && this.editedItem.mac.match(/^(([A-Fa-f0-9]{2}[:]){5}[A-Fa-f0-9]{2}[,]?)+$/) &&
                 this.editedItem.sigType !== '' &&
-                this.editedItem.x.match(/[0-9]|\./) &&
+                this.editedItem.x.toString().match(/[0-9]|\./) &&
                 this.editedItem.x !== '' && 
-                this.editedItem.y.match(/[0-9]|\./) &&
+                this.editedItem.y.toString().match(/[0-9]|\./) &&
                 this.editedItem.y !== '' 
+
+        // return true
       },
       submit() {
         this.formHasErrors = false
@@ -308,9 +296,9 @@ import * as firebase from 'firebase'
         })
       },
       formPOIIsValid () {
-          return  this.editedItem2.x.match(/[0-9]|\./) &&
+          return  this.editedItem2.x.toString().match(/[0-9]|\./) &&
                   this.editedItem2.x !== '' &&
-                  this.editedItem2.y.match(/[0-9]|\./) &&
+                  this.editedItem2.y.toString().match(/[0-9]|\./) &&
                   this.editedItem2.y !== '' 
                   
         },
@@ -325,10 +313,23 @@ import * as firebase from 'firebase'
     watch: {
       dialog (val) {
         val || this.close()
+      },
+      dialog2 (val) {
+        val || this.close2()
       }
     },
 
+
     methods: {
+      updateFloorplan(floorplanUrl){
+            this.floorplanUrl = floorplanUrl
+        },
+        updatePOI(items) {
+          this.items2.push(items)
+        },
+        updateItems(items) {
+          this.items.push(items)
+        },
       updateScale() {
         firebase.database().ref('events/' + this.id).child('scale').set(this.scale)
       },
@@ -338,51 +339,51 @@ import * as firebase from 'firebase'
         })
       },
       loadFloorplan() {
-        var items = []
-        var url = firebase.database().ref('events/' + this.id + '/floorplanUrl').once('value')
-          .then(function(snapshot) {
-              url = snapshot.val()
-              if(snapshot.val()===null){
-                items = null
-              }
-              else {
-                items.push(url)
-              }
-          })
-        this.floorplanUrl = items
-      },
+            var floorplanUrl = this.floorplanUrl
+            firebase.database().ref('events/' + this.id + '/floorplanUrl').once('value', (snapshot) =>{
+                floorplanUrl = snapshot.val()
+                this.updateFloorplan(floorplanUrl)
+            })
+            
+        },
       loadPOI() {
         var items = []
-        var data = firebase.database().ref('events/' + this.id + '/Search').once('value')
-            .then(function(snapshot) {
-              snapshot.forEach(function(childSnapshot) {
+        var data = firebase.database().ref('events/' + this.id + '/Search').once('value', (snapshot) =>{
+            snapshot.forEach((childSnapshot) => {
                 var childData = childSnapshot.val()
                 items.push(childData)
+                this.updatePOI(childData)
             })
-          })
-          this.items2 = items
+            this.reDraw2(items)
+        })
+          // this.items2 = items
       },
       loadDevices() {
         var items = []
-        var data = firebase.database().ref('events/' + this.id + '/Wifi').once('value')
-            .then(function(snapshot) {
-              snapshot.forEach(function(childSnapshot) {
+        var data = firebase.database().ref('events/' + this.id + '/Wifi').once('value', (snapshot) => {
+          snapshot.forEach((childSnapshot) => {
                 var childData = childSnapshot.val()
                 childData.sigType = 'Wifi'
                 childData.mac = childSnapshot.key
                 items.push(childData)
+                this.updateItems(childData)
             })
-          })
-        var data = firebase.database().ref('events/' + this.id + '/Beacon').once('value')
-            .then(function(snapshot) {
-              snapshot.forEach(function(childSnapshot) {
+            // this.reDraw(items)
+        })
+        var data = firebase.database().ref('events/' + this.id + '/Beacon').once('value', (snapshot) => {
+          snapshot.forEach( (childSnapshot) => {
                 var childData = childSnapshot.val()
                 childData.sigType = 'Beacon'
                 childData.mac = childSnapshot.key
                 items.push(childData)
+                // console.log(childData)
+                this.updateItems(childData)
             })
+            this.reDraw(items)
           })
-          this.items = items
+          
+          // this.updateItems(items)
+          
       },
       addDevice () {
             const passData = {
@@ -427,11 +428,15 @@ import * as firebase from 'firebase'
             })
         },
       editItem (item) {
+        console.log('1')
+        console.log(item)
         this.editedIndex = this.items.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
       editItem2 (item) {
+        console.log('2')
+        console.log(item)
         this.editedIndex2 = this.items2.indexOf(item)
         this.editedItem2 = Object.assign({}, item)
         this.dialog2 = true
@@ -439,25 +444,31 @@ import * as firebase from 'firebase'
       deleteItem (item) {
         const index = this.items.indexOf(item)
         confirm('Are you sure you want to delete this device?') && this.items.splice(index, 1) && firebase.database().ref('events/' + this.id).child(item.sigType).child(item.mac).remove()
+        this.reDraw(this.items)
       },
       deleteItem2 (item) {
         const index = this.items2.indexOf(item)
         confirm('Are you sure you want to delete this POI?') && this.items2.splice(index, 1) && firebase.database().ref('events/' + this.id + '/Search').child(item.key).remove()
+        this.reDraw2(this.items2)
       },
-
       close () {
         this.dialog = false
-        this.dialog2 = false
         setTimeout(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedItem2 = Object.assign({}, this.defaultItem2)
           this.editedIndex = -1
+        }, 300)
+      },
+      close2 () {
+        this.dialog2 = false
+        setTimeout(() => {
+          this.editedItem2 = Object.assign({}, this.defaultItem2)
           this.editedIndex2 = -1
         }, 300)
       },
 
       save () {
         if (this.editedIndex > -1) {
+          console.log('save')
           var updateData = {
               name: this.items[this.editedIndex].name,
               x: this.items[this.editedIndex].x,
@@ -465,22 +476,35 @@ import * as firebase from 'firebase'
           }
           firebase.database().ref('events/' + this.id).child(this.items[this.editedIndex].sigType).child(this.items[this.editedIndex].mac).remove()
           firebase.database().ref('events/' + this.id).child(this.editedItem.sigType).child(this.editedItem.mac).update(updateData)
-          Object.assign(this.items[this.editedIndex], this.editedItem)
+        //  console.log(this.items)
+         Object.assign(this.items[this.editedIndex], this.editedItem)
+        //  console.log(this.items)
         } else {
+          console.log('ggggg')
           this.items.push(this.editedItem)
           this.addDevice()
+          this.reDraw(this.items)
         }
         this.close()
       },
       savePOI () {
+        
         if (this.editedIndex2 > -1) {
+          var updateData = {
+              name: this.items2[this.editedIndex2].name,
+              x: this.items2[this.editedIndex2].x,
+              y: this.items2[this.editedIndex2].y,
+          }
+          firebase.database().ref('events/' + this.id + '/Search').child(this.items2[this.editedIndex2].key).update(updateData)
+          console.log(this.items2)
           Object.assign(this.items2[this.editedIndex2], this.editedItem2)
-          firebase.database().ref('events/' + this.id + '/Search').child(this.items2[this.editedIndex2].key).update(this.editedItem2)
+          console.log(this.items2)
         } else {
           this.items2.push(this.editedItem2)
           this.addPOI()
+          this.reDraw2(this.items2)
         }
-        this.close()
+        this.close2()
       },
         onAddFloorplan () {
             if (!this.image) {
@@ -516,7 +540,46 @@ import * as firebase from 'firebase'
             fileReader.readAsDataURL(files[0])
               this.image = files[0]
         },
-    },
+        reDraw(point) {
+                var draw = document.getElementById('yy')
+                draw.setAttribute('width', '550');
+                draw.setAttribute('height', '450');
+                var context = draw.getContext("2d");
+                var radius = 8;
+                context.translate(0, draw.height);
+                context.scale(1, -1);
+                // const self = this
+                
+                for (var i = 0; i < point.length; i++) {
+                    context.beginPath();
+                    context.arc(point[i].x * this.scale, point[i].y *this.scale, radius, 0, 2 * Math.PI, false);
+                    context.fillStyle = 'green';
+                context.fill();
+                context.lineWidth = 5;
+                    
+                }
+        },
+        reDraw2(point) {
+          console.log(point)
+                var draw = document.getElementById('xy')
+                draw.setAttribute('width', '550');
+                draw.setAttribute('height', '450');
+                var context = draw.getContext("2d");
+                var radius = 8;
+                context.translate(0, draw.height);
+                context.scale(1, -1);
+                // const self = this
+                
+                for (var i = 0; i < point.length; i++) {
+                    context.beginPath();
+                    context.arc(point[i].x * this.scale, point[i].y *this.scale, radius, 0, 2 * Math.PI, false);
+                    context.fillStyle = 'blue';
+                context.fill();
+                context.lineWidth = 5;
+                    
+                }
+              }
+          },
     beforeMount(){
       this.loadFloorplan()
     },
@@ -532,20 +595,28 @@ import * as firebase from 'firebase'
 
 <style scoped>
 
-.currentMap {
+#currentMap {
     position: absolute;
     width: 550px;
-    /* height: 400px; */
-    z-index: 1;
+    /* height: 480px; */
+    z-index:0;
     /* margin: auto; */
 }
 
-#myCanvas {
+#xy {
+    position: absolute;
+    width: 550px;
+    /* height: 480px; */
+    z-index:1;
+    /* margin: auto; */
+}
+
+.myCanvas {
     position: relative;
-    width:550px; 
+    width: 550px; 
     height: 450px;
     /* border:1px solid #000; */
-    z-index: 20;
+    z-index: 0;
 }
 
 

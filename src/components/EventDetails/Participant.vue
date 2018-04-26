@@ -91,6 +91,7 @@
           Sorry, nothing to display here :(
         </v-alert>
       </template>
+      
     </v-data-table>
     
     <v-btn

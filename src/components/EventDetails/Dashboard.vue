@@ -1,8 +1,8 @@
 <template>
    <v-container fluid grid-list-xl>
-     <v-alert type="info" :value="isEmpty">
+     <!-- <v-alert type="info" :value="isEmpty">
       No one is participated in this event yet
-    </v-alert>
+    </v-alert> -->
         <v-layout row wrap mb-4 >
             <v-flex d-flex xs6  v-if="this.age.kid || this.age.teen || this.age.young || this.age.adult || this.age.old  > 0">
               <v-card>
@@ -37,7 +37,7 @@
 
               <v-flex d-flex xs10 v-if="this.gender.male || this.gender.female > 0">
                 <v-card>
-                  <doughnut-chart :chart-data="datacollectionGenger" :options="optionsGen" ></doughnut-chart>
+                  <doughnut-chart :chart-data="datacollectionGender" :options="optionsGen" ></doughnut-chart>
                 </v-card>
               </v-flex>
 
@@ -61,7 +61,7 @@
     data () {
       return {
         datacollection: null,
-        datacollectionGenger: null,
+        datacollectionGender: null,
         isEmpty:true,
         active: 0,
         totol:0,
@@ -93,27 +93,15 @@
         type:'doughnut',
       }
     },
-    // beforeMount() {
-    //   this.countAge()
-    // },
+    beforeMount() {
+      // this.countAge()
+    },
     mounted () {
       this.countAge()
       this.countGender()
       this.countActive()
     },
     methods: {
-      // checkEmpty() {
-      //   console.log('check empty')
-      //   if(this.gender.male || this.gender.female > 0){
-      //     this.isEmpty = false
-      //   }
-      //   else {
-      //     is.isEmpty = true
-      //   }
-      // },
-      updateStatus() {
-
-      },
       updateGender(gender) {
         this.gender = gender
         this.totol = this.gender.male + this.gender.female
@@ -244,7 +232,7 @@
         }
       },
       fillDataGen() {
-        this.datacollectionGenger = {
+        this.datacollectionGender = {
           labels: ["Male", "Female",],
             datasets: [
               {
