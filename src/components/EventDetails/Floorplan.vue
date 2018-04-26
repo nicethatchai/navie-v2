@@ -7,6 +7,8 @@
         <v-layout wrap mb-4 >
             <v-flex d-flex xs6>
                 <img id="currentMap" :src="floorplanUrl"  >
+                <img id="currentMap" :src="imageUrl"  >
+                
                 <canvas class="myCanvas" id="yy" ></canvas>
                 <canvas  id="xy" ></canvas>
             </v-flex>
@@ -23,7 +25,7 @@
             <v-flex xs12>
               <!-- <v-btn small color="info" v-on:click.native="onPickFile">Browse</v-btn> -->
               <v-btn small color="success" v-if="image!=null" @click="onAddFloorplan">Save</v-btn>
-              <v-btn small color="error" v-if="image!=null" @click="onDeleteFloorplan">delete</v-btn>
+                <!-- <v-btn small color="error" v-if="image!=null" @click="onDeleteFloorplan">delete</v-btn> -->
               <!-- {{floorplanUrl}}  -->
             </v-flex>
 
@@ -165,17 +167,17 @@
             </v-flex>
         </v-layout>
 
-        <!-- <v-btn
+        <v-btn
           fixed
           dark
           fab
           bottom
           right
           color="pink"
-          v-if="floorplanUrl!=null"
+          v-if="floorplanUrl===null"
           v-on:click.native="onPickFile">
         <v-icon>add</v-icon>
-        </v-btn> -->
+        </v-btn>
 
         <input 
           type="file" 
@@ -520,14 +522,15 @@ import * as firebase from 'firebase'
             this.image=null
             this.imageUrl=null
         },
-        onDeleteFloorplan () {
-          this.image = null
-          this.imageUrl = null
-        },
+        // onDeleteFloorplan () {
+        //   this.image = null
+        //   this.imageUrl = null
+        // },
         onPickFile() {
             this.$refs.fileInput.click()
         },
         onFilePicked(event) {
+          console.log('picked')
             const files = event.target.files
             let filename = files[0].name
             if (filename.lastIndexOf('.') <= 0) {

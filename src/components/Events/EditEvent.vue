@@ -6,7 +6,7 @@
                     <v-card-title>
                         <h4 class="headline">{{editedTitle}}</h4>
                         <v-spacer></v-spacer>
-                        <v-btn color="red darken-1" flat @click="editedDialog = false">Delete</v-btn>
+                        <v-btn color="red darken-1" flat @click="deleteEvent">Delete</v-btn>
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
@@ -72,7 +72,9 @@
 </template>
 
 <script>
+import * as firebase from 'firebase'
 export default {
+    
     props: ['event'],
     data () {
         return {
@@ -80,6 +82,7 @@ export default {
             editedTitle: this.event.title,
             editedDescription: this.event.description,
             editedLocation: this.event.location,
+            id: this.event.id,
         }
     },
     computed:  {
@@ -91,6 +94,11 @@ export default {
         },
     },
     methods: {
+        deleteEvent() {
+            confirm('Are you sure you want to delete this event?') &&  firebase.database().ref('events/' + this.id).remove()
+            this.editedDialog = false
+            this.$store.dispatch('loadedEvents')
+        },
         onSaveChange () {
             if (this.editedTitle.trim() === '' || this.editedDescription.trim() === '' || this.editedLocation.trim() === '') {
                 return

@@ -1,8 +1,8 @@
 <template>
    <v-container fluid grid-list-xl>
-     <!-- <v-alert type="info" :value="isEmpty">
+     <v-alert type="info" :value="isEmpty">
       No one is participated in this event yet
-    </v-alert> -->
+    </v-alert>
         <v-layout row wrap mb-4 >
             <v-flex d-flex xs6  v-if="this.age.kid || this.age.teen || this.age.young || this.age.adult || this.age.old  > 0">
               <v-card>

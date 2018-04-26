@@ -16,7 +16,8 @@
               <v-layout row wrap>
                 <v-container fluid grid-list justify-center>
                   <v-layout row>
-                    <v-flex d-flex >
+
+                    <v-flex d-flex v-if="floorplanUrl!=null">
                       <v-card >
                         <v-container fluid grid-list-lg>
                                 <div align="center" >Active</div>
