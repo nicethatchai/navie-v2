@@ -204,10 +204,12 @@ import * as firebase from 'firebase'
       },
       loadParticipants() {
         var it = []
-        firebase.database().ref('events/' + this.id + '/participants').on('value', (snapshot) => {
+        firebase.database().ref('events/' + this.id + '/participants').once('value', (snapshot) => {
+          
           snapshot.forEach((childSnapshot) => {
                 var childData = childSnapshot.val()
-                firebase.database().ref('users/' + childSnapshot.key).once('value', (snapshot) => {
+                firebase.database().ref('users/' + childSnapshot.key).on('value', (snapshot) => {
+
                   var birthday = new Date(snapshot.val().dob)
                   var ageDifMs = Date.now() - birthday.getTime()
                   var ageDate = new Date(ageDifMs);

@@ -111,6 +111,7 @@ export default {
                 location: this.editedLocation,
                 date: this.editedDate,
             })
+            this.$store.dispatch('loadedEvents')
         }
     }
 }

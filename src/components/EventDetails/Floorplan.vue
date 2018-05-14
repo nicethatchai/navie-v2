@@ -56,8 +56,11 @@
                                   color="pink"></v-radio>
                               </v-radio-group>
                           </v-flex>
-                          <v-flex xs12>
+                          <v-flex xs12 sm6 >
                             <v-text-field label="MAC" v-model="editedItem.mac" required :rules="macRules"></v-text-field>
+                          </v-flex>
+                          <v-flex xs12 sm6 >
+                            <v-text-field label="RSSI" v-model="editedItem.rssi"></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <v-text-field label="X" v-model="editedItem.x" :rules="xRules"></v-text-field>
@@ -86,6 +89,7 @@
                     <td>{{ props.item.name }}</td>
                     <td class="text-xs-right">{{ props.item.mac }}</td>
                     <td class="text-xs-right">{{ props.item.sigType }}</td>
+                    <td class="text-xs-right">{{ props.item.rssi }}</td>
                     <td class="text-xs-right">{{ props.item.x }}</td>
                     <td class="text-xs-right">{{ props.item.y }}</td>
                     <td class="text-xs-right">
@@ -227,6 +231,7 @@ import * as firebase from 'firebase'
         },
         { text: 'MAC', value: 'mac',sortable: false },
         { text: 'Type', value: 'sigType',sortable: false },
+        { text: 'RSSI', value: 'rssi',sortable: false },
         { text: 'X', value: 'x',sortable: false },
         { text: 'Y', value: 'y',sortable: false },
         { text: '', value: 'name', sortable: false }
@@ -236,6 +241,7 @@ import * as firebase from 'firebase'
       editedItem: {
         name: '',
         mac: '',
+        rssi:'',
         sigType: 'Wifi',
         x: '',
         y: '',
@@ -243,6 +249,7 @@ import * as firebase from 'firebase'
       defaultItem: {
         name: '',
         mac: '',
+        rssi:'',
         sigType: 'Wifi',
         x: '',
         y: '',
@@ -323,6 +330,9 @@ import * as firebase from 'firebase'
 
 
     methods: {
+      deleteOldMac(mac){
+        
+      },
       updateFloorplan(floorplanUrl){
             this.floorplanUrl = floorplanUrl
         },
@@ -393,9 +403,11 @@ import * as firebase from 'firebase'
               mac: this.editedItem.mac
             }
             const devData = {
+              
                 name: this.editedItem.name,
-                x: this.editedItem.x,
-                y: this.editedItem.y,
+                rssi: parseInt(this.editedItem.rssi),
+                x:  parseInt(this.editedItem.x),
+                y: parseInt(this.editedItem.y),
             }
             if(this.editedItem.sigType==='Beacon')
             {
@@ -470,19 +482,23 @@ import * as firebase from 'firebase'
 
       save () {
         if (this.editedIndex > -1) {
-          console.log('save')
           var updateData = {
-              name: this.items[this.editedIndex].name,
-              x: this.items[this.editedIndex].x,
-              y: this.items[this.editedIndex].y,
+              name: this.editedItem.name,
+              rssi: parseInt(this.editedItem.rssi),
+              x: parseInt(this.editedItem.x),
+              y: parseInt(this.editedItem.y),
           }
-          firebase.database().ref('events/' + this.id).child(this.items[this.editedIndex].sigType).child(this.items[this.editedIndex].mac).remove()
+          if(this.editedItem.mac != this.items[this.editedIndex].mac || this.editedItem.sigType != this.items[this.editedIndex].mac ){
+              firebase.database().ref('events/' + this.id).child(this.items[this.editedIndex].sigType).child(this.items[this.editedIndex].mac).remove()
+          }
           firebase.database().ref('events/' + this.id).child(this.editedItem.sigType).child(this.editedItem.mac).update(updateData)
+          // firebase.database().ref('events/' + this.id).child(this.items[this.editedIndex].sigType).child(this.items[this.editedIndex].mac).remove()
+          // firebase.database().ref('events/' + this.id).child(this.editedItem.sigType).child(this.editedItem.mac).update(updateData)
         //  console.log(this.items)
          Object.assign(this.items[this.editedIndex], this.editedItem)
         //  console.log(this.items)
         } else {
-          console.log('ggggg')
+          // console.log('ggggg')
           this.items.push(this.editedItem)
           this.addDevice()
           this.reDraw(this.items)
